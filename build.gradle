@@ -28,10 +28,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	runtimeOnly 'mysql:mysql-connector-java:8.0.26'
+	implementation 'mysql:mysql-connector-java:8.0.23'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	implementation 'org.hibernate:hibernate-core:6.0.0.Final'
 }
 
 tasks.named('test') {
