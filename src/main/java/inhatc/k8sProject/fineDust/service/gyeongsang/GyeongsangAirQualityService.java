@@ -1,9 +1,9 @@
-package inhatc.k8sProject.fineDust.service.gangwon;
+package inhatc.k8sProject.fineDust.service.gyeongsang;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import inhatc.k8sProject.fineDust.domain.gangwon.GangwonAirQuality;
-import inhatc.k8sProject.fineDust.repository.gangwon.GangwonAirQualityRepository;
+import inhatc.k8sProject.fineDust.domain.gyeongsang.GyeongsangAirQuality;
+import inhatc.k8sProject.fineDust.repository.gyeongsang.GyeongsangAirQualityRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,28 +21,29 @@ import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class GangwonAirQualityService {
+public class GyeongsangAirQualityService {
 
-    private final GangwonAirQualityRepository gangwonAirQualityRepository;
+    private final GyeongsangAirQualityRepository gyeongsangAirQualityRepository;
     private final ObjectMapper objectMapper = new ObjectMapper(); // JSON 파싱을 위한 ObjectMapper
-    private static final Logger log = LoggerFactory.getLogger(GangwonAirQualityService.class);
+    private static final Logger log = LoggerFactory.getLogger(GyeongsangAirQualityService.class);
 
-    @Value("${service.key}") // 애플리케이션 속성 파일에서 가져온 값
+    @Value("${service.key}")
     private String serviceKey;
 
-    // 일정 시간마다 대기 질 데이터를 업데이트하는 예약된 작업
-    @Scheduled(fixedRate = 1800000) // 30분마다
+    @Scheduled(fixedRate = 1800000)
     public void updateAirQualityDataAutomatically() {
-        String sidoName = "강원"; // 대상 지역 이름
-        fetchAndSaveGangwonAirQualityData(sidoName); // 해당 지역의 대기 질 데이터 가져와 저장
+        // 스케줄링된 작업: 일정 간격으로 대기 질 데이터를 업데이트하는 메소드
+        List<String> sidoList = Arrays.asList("경북", "경남", "대구", "울산", "부산");
+        sidoList.forEach(this::fetchAndSaveGyeongsangAirQualityData);
     }
 
-    // 대기 질 데이터를 가져와 저장하는 메서드
-    @Transactional("gangwonTransactionManager")
-    public String fetchAndSaveGangwonAirQualityData(String sidoName) {
+    @Transactional("gyeongsangTransactionManager")
+    public String fetchAndSaveGyeongsangAirQualityData(String sidoName) {
         try {
             // API 요청을 위한 URL 구성
             StringBuilder requestUrlBuilder = new StringBuilder("https://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty?");
@@ -86,8 +87,8 @@ public class GangwonAirQualityService {
 
             // JSON 데이터 파싱 및 저장
             items.forEach(item -> {
-                GangwonAirQuality gangwonAirQuality = parseAirQualityData(item);
-                gangwonAirQualityRepository.save(gangwonAirQuality);
+                GyeongsangAirQuality gyeongsangAirQuality = parseAirQualityData(item);
+                gyeongsangAirQualityRepository.save(gyeongsangAirQuality);
             });
 
             return "성공";
@@ -97,9 +98,9 @@ public class GangwonAirQualityService {
         }
     }
 
-    // JSON 데이터를 파싱하여 GangwonAirQuality 객체로 변환하는 메서드
-    private GangwonAirQuality parseAirQualityData(JsonNode item) {
-        GangwonAirQuality gangwonAirQuality = new GangwonAirQuality();
+    private GyeongsangAirQuality parseAirQualityData(JsonNode item) {
+        // JSON 데이터를 파싱하여 GyeongsangAirQuality 객체로 변환하는 메서드
+        GyeongsangAirQuality gyeongsangAirQuality = new GyeongsangAirQuality();
 
         // 측정 시간을 파싱하고 KST(Korean Standard Time)로 조정
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -118,13 +119,14 @@ public class GangwonAirQualityService {
             dateTime = LocalDateTime.now(); // 예시 기본값, 필요에 따라 조정
         }
         LocalDateTime kstDateTime = dateTime.plusHours(9); // KST로 변환
-        gangwonAirQuality.setDataTime(kstDateTime); // 측정 시간 설정
+        gyeongsangAirQuality.setDataTime(kstDateTime); // 측정 시간 설정
 
-        gangwonAirQuality.setStationName(item.path("stationName").asText(null)); // 측정소 이름 설정
-        gangwonAirQuality.setSidoName(item.path("sidoName").asText(null)); // 지역 이름 설정
-        gangwonAirQuality.setPm10Value(item.path("pm10Value").asDouble(0)); // PM10 값 설정
-        gangwonAirQuality.setPm25Value(item.path("pm25Value").asDouble(0)); // PM2.5 값 설정
+        // 나머지 값들 설정: JSON 객체에서 각 대기 질 지표 값을 읽어와서 GyeongsangAirQuality 객체의 속성으로 설정
+        gyeongsangAirQuality.setStationName(item.path("stationName").asText(null)); // 측정소 이름
+        gyeongsangAirQuality.setSidoName(item.path("sidoName").asText(null)); // 지역 이름
+        gyeongsangAirQuality.setPm10Value(item.path("pm10Value").asDouble(0)); // PM10 값
+        gyeongsangAirQuality.setPm25Value(item.path("pm25Value").asDouble(0)); // PM2.5 값
 
-        return gangwonAirQuality;
+        return gyeongsangAirQuality; // 설정된 값을 담은 GyeongsangAirQuality 객체 반환
     }
 }

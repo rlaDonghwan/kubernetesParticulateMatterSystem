@@ -19,14 +19,14 @@ public class GyeonggiStationInfoController {
 
     @GetMapping("/test")
     public ResponseEntity<String> updateStationInfoData(
-            @RequestParam(defaultValue = "서울") String stationNames) {
+            @RequestParam(defaultValue = "서울,경기,인천") String stationNames) {
 
         List<String> stationList = Arrays.asList(stationNames.split(",")); //쉼표 공백제거
 
         StringBuilder resultBuilder = new StringBuilder();
 
         for (String stationName : stationList) { //리스트의 있는 값을 sidoName의 저장
-            String result = gyeonggiStationInfoService.fetchAndSaveStationInfo(stationName.trim()); // 공백 제거 후 저장
+            String result = gyeonggiStationInfoService.fetchAndSaveGyeonggiStationInfo(stationName.trim()); // 공백 제거 후 저장
             resultBuilder.append(stationName).append(": ").append(result).append("; ");
         }
 

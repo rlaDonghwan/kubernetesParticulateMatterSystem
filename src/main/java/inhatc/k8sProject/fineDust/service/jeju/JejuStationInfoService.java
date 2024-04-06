@@ -1,9 +1,9 @@
-package inhatc.k8sProject.fineDust.service.gangwon;
+package inhatc.k8sProject.fineDust.service.jeju;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import inhatc.k8sProject.fineDust.domain.gangwon.GangwonStationInfo;
-import inhatc.k8sProject.fineDust.repository.gangwon.GangwonStationInfoRepository;
+import inhatc.k8sProject.fineDust.domain.jeju.JejuStationInfo;
+import inhatc.k8sProject.fineDust.repository.jeju.JejuStationInfoRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,32 +21,31 @@ import java.net.URLEncoder;
 
 @Service
 @RequiredArgsConstructor
-public class GangwonStationInfoService {
+public class JejuStationInfoService {
 
-    private final GangwonStationInfoRepository gangwonStationInfoRepository;
-    private final ObjectMapper objectMapper = new ObjectMapper(); // JSON 파싱을 위한 ObjectMapper
-    private static final Logger log = LoggerFactory.getLogger(GangwonStationInfoService.class);
+    private final JejuStationInfoRepository jejuStationInfoRepository;
+    private final ObjectMapper objectMapper = new ObjectMapper(); // JSON 파싱을 위해 추가
+    private static final Logger log = LoggerFactory.getLogger(JejuStationInfoRepository.class);
 
-    @Value("${service.key}") // 애플리케이션 속성 파일에서 가져온 값
+    @Value("${service.key}")
     private String serviceKey;
 
-    // 일정 시간마다 측정소 정보를 업데이트하는 예약된 작업
+    // 주기적으로 측정소 정보 업데이트
     @Scheduled(fixedRate = 1800000) // 30분마다
-    public void updateStationInfoDataAutomatically() {
-        String sidoName = "강원"; // 대상 지역 이름
-        fetchAndSaveStationInfo(sidoName); // 해당 지역의 측정소 정보 가져와 저장
+    public void updateAirQualityDataAutomatically() {
+        String sidoName = "제주"; // 제주도의 시도명
+        fetchAndSaveJejuStationInfo(sidoName); // 제주도 측정소 정보 가져와 저장
     }
 
     // 측정소 정보를 가져와 저장하는 메서드
-    @Transactional("gangwonTransactionManager")
-    public String fetchAndSaveStationInfo(String sidoName) {
+    @Transactional("jejuTransactionManager")
+    public String fetchAndSaveJejuStationInfo(String address) {
         try {
-            // API 요청을 위한 URL 구성
             StringBuilder requestUrlBuilder = new StringBuilder("https://apis.data.go.kr/B552584/MsrstnInfoInqireSvc/getMsrstnList?");
-            requestUrlBuilder.append("&addr=").append(URLEncoder.encode(sidoName, "UTF-8"));
+            requestUrlBuilder.append("&addr=").append(URLEncoder.encode(address, "UTF-8"));
             requestUrlBuilder.append("&pageNo=").append(URLEncoder.encode("1", "UTF-8"));
             requestUrlBuilder.append("&numOfRows=").append(URLEncoder.encode("100", "UTF-8"));
-            requestUrlBuilder.append("&serviceKey=").append(serviceKey); // 서비스 키 추가
+            requestUrlBuilder.append("&serviceKey=").append(serviceKey);
             requestUrlBuilder.append("&returnType=").append(URLEncoder.encode("json", "UTF-8"));
 
             URL url = new URL(requestUrlBuilder.toString());
@@ -54,7 +53,7 @@ public class GangwonStationInfoService {
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Content-type", "application/json");
 
-            // HTTP 응답 코드 확인
+            // 응답 코드 확인
             if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
                 log.error("HTTP 오류 코드 : " + conn.getResponseCode());
                 return "HTTP 오류로 실패";
@@ -70,20 +69,17 @@ public class GangwonStationInfoService {
             conn.disconnect();
 
             String response = responseBuilder.toString();
-
-            // 응답 형식 검증
             if (response.trim().startsWith("<")) {
-                log.error("예상하지 않은 JSON 형식의 응답입니다. 응답: " + response);
+                log.error("예상치 않은 JSON 형식의 응답입니다. 응답: " + response);
                 return "예상치 않은 응답 형식으로 실패";
             }
 
             JsonNode rootNode = objectMapper.readTree(response);
             JsonNode items = rootNode.path("response").path("body").path("items");
 
-            // JSON 데이터 파싱 및 저장
             for (JsonNode item : items) {
-                GangwonStationInfo stationInfo = parseStationInfoData(item);
-                gangwonStationInfoRepository.save(stationInfo);
+                JejuStationInfo jejuStationInfo = parseStationInfoData(item);
+                jejuStationInfoRepository.save(jejuStationInfo);
             }
 
             return "성공";
@@ -93,14 +89,14 @@ public class GangwonStationInfoService {
         }
     }
 
-    // JSON 데이터를 파싱하여 GangwonStationInfo 객체로 변환하는 메서드
-    private GangwonStationInfo parseStationInfoData(JsonNode item) {
-        GangwonStationInfo gangwonStationInfo = new GangwonStationInfo();
-        gangwonStationInfo.setStationName(item.path("stationName").asText(null)); // 측정소 이름 설정
-        gangwonStationInfo.setAddr(item.path("addr").asText(null)); // 주소 설정
-        gangwonStationInfo.setDmX(item.path("dmX").asDouble()); // X 좌표 설정
-        gangwonStationInfo.setDmY(item.path("dmY").asDouble()); // Y 좌표 설정
-        return gangwonStationInfo;
+    // JSON 데이터를 파싱하여 JejuStationInfo 객체로 변환하는 메서드
+    private JejuStationInfo parseStationInfoData(JsonNode item) {
+        JejuStationInfo jejuStationInfo = new JejuStationInfo();
+        jejuStationInfo.setStationName(item.path("stationName").asText(null)); // 측정소 이름
+        jejuStationInfo.setAddr(item.path("addr").asText(null)); // 주소
+        jejuStationInfo.setDmX(item.path("dmX").asDouble()); // X 좌표
+        jejuStationInfo.setDmY(item.path("dmY").asDouble()); // Y 좌표
+        return jejuStationInfo;
     }
 
 }

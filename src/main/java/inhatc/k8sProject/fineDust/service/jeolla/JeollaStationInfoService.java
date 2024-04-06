@@ -1,9 +1,10 @@
-package inhatc.k8sProject.fineDust.service.gyeonggi;
+package inhatc.k8sProject.fineDust.service.jeolla;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import inhatc.k8sProject.fineDust.domain.gyeonggi.GyeonggiStationInfo;
-import inhatc.k8sProject.fineDust.repository.gyeonggi.GyeonggiStationInfoRepository;
+import inhatc.k8sProject.fineDust.domain.jeolla.JeollaStationInfo;
+import inhatc.k8sProject.fineDust.repository.gyeongsang.GyeongsangStationInfoRepository;
+import inhatc.k8sProject.fineDust.repository.jeolla.JeollaStationInfoRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,28 +24,28 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class GyeonggiStationInfoService {
+public class JeollaStationInfoService {
 
-    private final GyeonggiStationInfoRepository gyeonggiStationInfoRepository;
-    private final ObjectMapper objectMapper = new ObjectMapper(); // JSON 파싱을 위한 ObjectMapper
-    private static final Logger log = LoggerFactory.getLogger(GyeonggiStationInfoService.class);
+    private final JeollaStationInfoRepository jeollaStationInfoRepository;
+    private final ObjectMapper objectMapper = new ObjectMapper(); // JSON 파싱을 위해 추가
+    private static final Logger log = LoggerFactory.getLogger(GyeongsangStationInfoRepository.class);
 
-    @Value("${service.key}") // 애플리케이션 속성 파일에서 가져온 값
+    @Value("${service.key}")
     private String serviceKey;
 
 
     @Scheduled(fixedRate = 1800000)
     public void updateAirQualityDataAutomatically() {
-        List<String> sidoList = Arrays.asList("서울", "경기", "인천");
-        sidoList.forEach(this::fetchAndSaveGyeonggiStationInfo);
+        // 스케줄링된 작업: 일정 간격으로 대기 질 데이터를 업데이트하는 메소드
+        List<String> sidoList = Arrays.asList("전북", "전남", "광주");
+        sidoList.forEach(this::fetchAndSaveJeollaStationInfo);
     }
 
-    @Transactional("gyeonggiTransactionManager")
-    public String fetchAndSaveGyeonggiStationInfo(String sidoName) {
+    @Transactional("jeollaTransactionManager")
+    public String fetchAndSaveJeollaStationInfo(String address) {
         try {
-            // API 요청을 위한 URL 구성
             StringBuilder requestUrlBuilder = new StringBuilder("https://apis.data.go.kr/B552584/MsrstnInfoInqireSvc/getMsrstnList?");
-            requestUrlBuilder.append("&addr=").append(URLEncoder.encode(sidoName, "UTF-8"));
+            requestUrlBuilder.append("&addr=").append(URLEncoder.encode(address, "UTF-8"));
             requestUrlBuilder.append("&pageNo=").append(URLEncoder.encode("1", "UTF-8"));
             requestUrlBuilder.append("&numOfRows=").append(URLEncoder.encode("100", "UTF-8"));
             requestUrlBuilder.append("&serviceKey=").append(serviceKey);
@@ -58,8 +59,8 @@ public class GyeonggiStationInfoService {
 
             // 응답 코드 확인
             if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                log.error("HTTP 오류 코드 : " + conn.getResponseCode());
-                return "HTTP 오류로 실패";
+                log.error("HTTP error code : " + conn.getResponseCode());
+                return "Failure due to HTTP error";
             }
 
             BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -73,32 +74,32 @@ public class GyeonggiStationInfoService {
 
             String response = responseBuilder.toString();
             if (response.trim().startsWith("<")) {
-                log.error("예상하지 않은 JSON 형식의 응답입니다. 응답: " + response);
-                return "예상치 않은 응답 형식으로 실패";
+                log.error("Response is not in expected JSON format. Response: " + response);
+                return "Failure due to unexpected response format";
             }
 
             JsonNode rootNode = objectMapper.readTree(response);
             JsonNode items = rootNode.path("response").path("body").path("items");
 
             for (JsonNode item : items) {
-                GyeonggiStationInfo gyeonggiStationInfo = parseStationInfoData(item);
-                gyeonggiStationInfoRepository.save(gyeonggiStationInfo);
+                JeollaStationInfo jeollaStationInfo = parseStationInfoData(item);
+                jeollaStationInfoRepository.save(jeollaStationInfo);
             }
 
-            return "성공";
+            return "Success";
         } catch (IOException e) {
-            log.error("측정소 정보를 가져오고 저장하는 데 실패했습니다", e);
-            return "실패";
+            log.error("Failed to fetch and save station info", e);
+            return "Failure";
         }
     }
 
-    private GyeonggiStationInfo parseStationInfoData(JsonNode item) {
-        GyeonggiStationInfo gyeonggiStationInfo = new GyeonggiStationInfo();
-        gyeonggiStationInfo.setStationName(item.path("stationName").asText(null)); // 측정소 이름
-        gyeonggiStationInfo.setAddr(item.path("addr").asText(null)); // 주소
-        gyeonggiStationInfo.setDmX(item.path("dmX").asDouble()); // X 좌표
-        gyeonggiStationInfo.setDmY(item.path("dmY").asDouble()); // Y 좌표
-        return gyeonggiStationInfo;
+    private JeollaStationInfo parseStationInfoData(JsonNode item) {
+        JeollaStationInfo jeollaStationInfo = new JeollaStationInfo();
+        jeollaStationInfo.setStationName(item.path("stationName").asText(null)); // 측정소 이름
+        jeollaStationInfo.setAddr(item.path("addr").asText(null)); // 주소
+        jeollaStationInfo.setDmX(item.path("dmX").asDouble()); // X 좌표
+        jeollaStationInfo.setDmY(item.path("dmY").asDouble()); // Y 좌표
+        return jeollaStationInfo;
     }
 
 }

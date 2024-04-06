@@ -1,9 +1,11 @@
-package inhatc.k8sProject.fineDust.service.gangwon;
+package inhatc.k8sProject.fineDust.service.chungcheong;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import inhatc.k8sProject.fineDust.domain.gangwon.GangwonStationInfo;
-import inhatc.k8sProject.fineDust.repository.gangwon.GangwonStationInfoRepository;
+import inhatc.k8sProject.fineDust.domain.chungcheong.ChungcheongStationInfo;
+import inhatc.k8sProject.fineDust.domain.gyeongsang.GyeongsangStationInfo;
+import inhatc.k8sProject.fineDust.repository.chungcheong.ChungcheongStationInfoRepository;
+import inhatc.k8sProject.fineDust.repository.gyeongsang.GyeongsangStationInfoRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,35 +20,37 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class GangwonStationInfoService {
+public class ChungcheongStationInfoService {
 
-    private final GangwonStationInfoRepository gangwonStationInfoRepository;
+    private final ChungcheongStationInfoRepository chungcheongStationInfoRepository;
     private final ObjectMapper objectMapper = new ObjectMapper(); // JSON 파싱을 위한 ObjectMapper
-    private static final Logger log = LoggerFactory.getLogger(GangwonStationInfoService.class);
+    private static final Logger log = LoggerFactory.getLogger(GyeongsangStationInfoRepository.class);
 
-    @Value("${service.key}") // 애플리케이션 속성 파일에서 가져온 값
+    @Value("${service.key}")
     private String serviceKey;
 
-    // 일정 시간마다 측정소 정보를 업데이트하는 예약된 작업
-    @Scheduled(fixedRate = 1800000) // 30분마다
-    public void updateStationInfoDataAutomatically() {
-        String sidoName = "강원"; // 대상 지역 이름
-        fetchAndSaveStationInfo(sidoName); // 해당 지역의 측정소 정보 가져와 저장
+    // 스케줄링된 작업: 주석 처리하여 현재는 스케줄링이 비활성화되어 있음
+    @Scheduled(fixedRate = 1800000)
+    public void updateAirQualityDataAutomatically() {
+        // 스케줄링된 작업: 일정 간격으로 대기 질 데이터를 업데이트하는 메소드
+        List<String> sidoList = Arrays.asList("충남", "충북", "세종", "대전");
+        sidoList.forEach(this::fetchAndSaveChungcheongStationInfo);
     }
 
-    // 측정소 정보를 가져와 저장하는 메서드
-    @Transactional("gangwonTransactionManager")
-    public String fetchAndSaveStationInfo(String sidoName) {
+    // 대기 측정소 정보를 가져와 저장하는 메서드
+    @Transactional("chungcheongTransactionManager")
+    public String fetchAndSaveChungcheongStationInfo(String address) {
         try {
-            // API 요청을 위한 URL 구성
             StringBuilder requestUrlBuilder = new StringBuilder("https://apis.data.go.kr/B552584/MsrstnInfoInqireSvc/getMsrstnList?");
-            requestUrlBuilder.append("&addr=").append(URLEncoder.encode(sidoName, "UTF-8"));
+            requestUrlBuilder.append("&addr=").append(URLEncoder.encode(address, "UTF-8"));
             requestUrlBuilder.append("&pageNo=").append(URLEncoder.encode("1", "UTF-8"));
             requestUrlBuilder.append("&numOfRows=").append(URLEncoder.encode("100", "UTF-8"));
-            requestUrlBuilder.append("&serviceKey=").append(serviceKey); // 서비스 키 추가
+            requestUrlBuilder.append("&serviceKey=").append(serviceKey);
             requestUrlBuilder.append("&returnType=").append(URLEncoder.encode("json", "UTF-8"));
 
             URL url = new URL(requestUrlBuilder.toString());
@@ -70,7 +74,6 @@ public class GangwonStationInfoService {
             conn.disconnect();
 
             String response = responseBuilder.toString();
-
             // 응답 형식 검증
             if (response.trim().startsWith("<")) {
                 log.error("예상하지 않은 JSON 형식의 응답입니다. 응답: " + response);
@@ -80,10 +83,9 @@ public class GangwonStationInfoService {
             JsonNode rootNode = objectMapper.readTree(response);
             JsonNode items = rootNode.path("response").path("body").path("items");
 
-            // JSON 데이터 파싱 및 저장
             for (JsonNode item : items) {
-                GangwonStationInfo stationInfo = parseStationInfoData(item);
-                gangwonStationInfoRepository.save(stationInfo);
+                ChungcheongStationInfo chungcheongStationInfo = parseStationInfoData(item);
+                chungcheongStationInfoRepository.save(chungcheongStationInfo);
             }
 
             return "성공";
@@ -93,14 +95,14 @@ public class GangwonStationInfoService {
         }
     }
 
-    // JSON 데이터를 파싱하여 GangwonStationInfo 객체로 변환하는 메서드
-    private GangwonStationInfo parseStationInfoData(JsonNode item) {
-        GangwonStationInfo gangwonStationInfo = new GangwonStationInfo();
-        gangwonStationInfo.setStationName(item.path("stationName").asText(null)); // 측정소 이름 설정
-        gangwonStationInfo.setAddr(item.path("addr").asText(null)); // 주소 설정
-        gangwonStationInfo.setDmX(item.path("dmX").asDouble()); // X 좌표 설정
-        gangwonStationInfo.setDmY(item.path("dmY").asDouble()); // Y 좌표 설정
-        return gangwonStationInfo;
+    // JSON 데이터를 파싱하여 GyeongsangStationInfo 객체로 변환하는 메서드
+    private ChungcheongStationInfo parseStationInfoData(JsonNode item) {
+        ChungcheongStationInfo chungcheongStationInfo = new ChungcheongStationInfo();
+        chungcheongStationInfo.setStationName(item.path("stationName").asText(null)); // 측정소 이름 설정
+        chungcheongStationInfo.setAddr(item.path("addr").asText(null)); // 주소 설정
+        chungcheongStationInfo.setDmX(item.path("dmX").asDouble()); // X 좌표 설정
+        chungcheongStationInfo.setDmY(item.path("dmY").asDouble()); // Y 좌표 설정
+        return chungcheongStationInfo;
     }
 
 }
