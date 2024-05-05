@@ -18,8 +18,8 @@ public class GyeongsangAirQuality {
     private LocalDateTime dataTime; // 측정시간
     private String stationName; // 측정소 이름
     private String sidoName; // 지역이름
-    private double pm10Value;
-    private double pm25Value;
+    private double pm10Value; //미세먼지
+    private double pm25Value; //초 미세먼지
 
 
 }

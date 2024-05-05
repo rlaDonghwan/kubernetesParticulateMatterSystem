@@ -18,6 +18,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class GyeongsangStationInfoService {
     private String serviceKey;
 
     // 스케줄링된 작업: 주석 처리하여 현재는 스케줄링이 비활성화되어 있음
-    @Scheduled(fixedRate = 1800000)
+    @Scheduled(cron = "0 10 * * * *") // 매 시간의 10분에 실행
     public void updateAirQualityDataAutomatically() {
         // 스케줄링된 작업: 일정 간격으로 대기 질 데이터를 업데이트하는 메소드
         List<String> sidoList = Arrays.asList("경북", "경남", "대구", "울산", "부산");
@@ -100,6 +101,11 @@ public class GyeongsangStationInfoService {
         gyeongsangStationInfo.setAddr(item.path("addr").asText(null)); // 주소 설정
         gyeongsangStationInfo.setDmX(item.path("dmX").asDouble()); // X 좌표 설정
         gyeongsangStationInfo.setDmY(item.path("dmY").asDouble()); // Y 좌표 설정
+
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        LocalDateTime kstDateTime = currentDateTime.plusHours(9); // KST로 변환
+        gyeongsangStationInfo.setInPutDataTime(kstDateTime);
+
         return gyeongsangStationInfo;
     }
 

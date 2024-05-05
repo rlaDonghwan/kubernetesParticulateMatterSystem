@@ -19,6 +19,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class JeollaStationInfoService {
     private String serviceKey;
 
 
-    @Scheduled(fixedRate = 1800000)
+    @Scheduled(cron = "0 10 * * * *") // 매 시간의 10분에 실행
     public void updateAirQualityDataAutomatically() {
         // 스케줄링된 작업: 일정 간격으로 대기 질 데이터를 업데이트하는 메소드
         List<String> sidoList = Arrays.asList("전북", "전남", "광주");
@@ -99,6 +100,9 @@ public class JeollaStationInfoService {
         jeollaStationInfo.setAddr(item.path("addr").asText(null)); // 주소
         jeollaStationInfo.setDmX(item.path("dmX").asDouble()); // X 좌표
         jeollaStationInfo.setDmY(item.path("dmY").asDouble()); // Y 좌표
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        LocalDateTime kstDateTime = currentDateTime.plusHours(9); // KST로 변환
+        jeollaStationInfo.setInPutDataTime(kstDateTime);
         return jeollaStationInfo;
     }
 

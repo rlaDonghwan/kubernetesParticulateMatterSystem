@@ -2,7 +2,10 @@ package inhatc.k8sProject.fineDust.service.gangwon;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import inhatc.k8sProject.fineDust.domain.gangwon.GangwonAirQuality;
 import inhatc.k8sProject.fineDust.domain.gangwon.GangwonStationInfo;
+import inhatc.k8sProject.fineDust.dto.StationAirQualityInfoDTO;
+import inhatc.k8sProject.fineDust.repository.gangwon.GangwonAirQualityRepository;
 import inhatc.k8sProject.fineDust.repository.gangwon.GangwonStationInfoRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -18,12 +21,18 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class GangwonStationInfoService {
 
     private final GangwonStationInfoRepository gangwonStationInfoRepository;
+    private final GangwonAirQualityRepository gangwonAirQualityRepository;
     private final ObjectMapper objectMapper = new ObjectMapper(); // JSON 파싱을 위한 ObjectMapper
     private static final Logger log = LoggerFactory.getLogger(GangwonStationInfoService.class);
 
@@ -31,11 +40,12 @@ public class GangwonStationInfoService {
     private String serviceKey;
 
     // 일정 시간마다 측정소 정보를 업데이트하는 예약된 작업
-    @Scheduled(fixedRate = 1800000) // 30분마다
+    @Scheduled(cron = "0 10 * * * *") // 매 시간의 10분에 실행
     public void updateStationInfoDataAutomatically() {
         String sidoName = "강원"; // 대상 지역 이름
         fetchAndSaveStationInfo(sidoName); // 해당 지역의 측정소 정보 가져와 저장
     }
+    //------------------------------------------------------------------------------------------------------------------------
 
     // 측정소 정보를 가져와 저장하는 메서드
     @Transactional("gangwonTransactionManager")
@@ -92,6 +102,7 @@ public class GangwonStationInfoService {
             return "실패";
         }
     }
+    //------------------------------------------------------------------------------------------------------------------------
 
     // JSON 데이터를 파싱하여 GangwonStationInfo 객체로 변환하는 메서드
     private GangwonStationInfo parseStationInfoData(JsonNode item) {
@@ -100,7 +111,48 @@ public class GangwonStationInfoService {
         gangwonStationInfo.setAddr(item.path("addr").asText(null)); // 주소 설정
         gangwonStationInfo.setDmX(item.path("dmX").asDouble()); // X 좌표 설정
         gangwonStationInfo.setDmY(item.path("dmY").asDouble()); // Y 좌표 설정
+
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        LocalDateTime kstDateTime = currentDateTime.plusHours(9); // KST로 변환
+        gangwonStationInfo.setInPutDataTime(kstDateTime);
         return gangwonStationInfo;
     }
+    //------------------------------------------------------------------------------------------------------------------------
+
+
+    // 가장 최근에 입력된 측정소 데이터를 조회하는 메소드
+    @Transactional(readOnly = true)
+    public List<GangwonStationInfo> findRecentGangownStationsData() {
+        // 데이터베이스에서 가장 최근에 입력된 데이터의 시간을 조회
+        Optional<GangwonStationInfo> latestEntry = gangwonStationInfoRepository.findTopByOrderByInPutDataTimeDesc();
+
+        // 만약 최근 데이터가 존재하면 해당 데이터의 시간을 사용하고, 존재하지 않으면 현재 시간에서 5분을 뺀 시간을 기준으로 설정
+        LocalDateTime lastDataTime = latestEntry.map(GangwonStationInfo::getInPutDataTime)
+                .orElse(LocalDateTime.now().minusMinutes(5));
+
+        // 계산된 시간부터 현재 시간까지의 데이터를 조회
+        return gangwonStationInfoRepository.findByInPutDataTimeBetween(lastDataTime, LocalDateTime.now());
+    }
+    //--------------------------------------------------------------------------------------------------------------------------------------
+
+    // 최근 측정소와 그에 대한 공기질 정보를 조회하는 메소드
+    @Transactional(readOnly = true)
+    public List<StationAirQualityInfoDTO> findRecentGangwonStationsWithAirQuality() {
+        // 모든 측정소 정보를 조회
+        List<GangwonStationInfo> stations = gangwonStationInfoRepository.findAll();
+        log.info("Fetched {} stations data.", stations.size()); // 조회된 측정소 수 로그 기록
+        // 각 측정소에 대해 공기질 정보를 가져와 StationAirQualityInfo로 매핑하고 필터링하여 반환
+        return stations.stream().map(station -> {
+            // 각 측정소에 대한 최신 공기질 정보를 조회
+            Optional<GangwonAirQuality> airQualityOptional = gangwonAirQualityRepository
+                    .findFirstByStationNameOrderByDataTimeDesc(station.getStationName());
+            // 공기질 정보가 존재할 경우 로그 기록 및 StationAirQualityInfo 생성 후 반환, 존재하지 않을 경우 null 반환
+            airQualityOptional.ifPresent(aq -> log.info("Air quality data for {}: PM10 = {}, PM2.5 = {}", station.getStationName(), aq.getPm10Value(), aq.getPm25Value()));
+            return airQualityOptional.map(aq -> new StationAirQualityInfoDTO(station, aq)).orElse(null);
+        }).filter(Objects::nonNull).collect(Collectors.toList()); // null이 아닌 StationAirQualityInfo만 필터링하여 반환
+    }
+    //--------------------------------------------------------------------------------------------------------------------------------------
+
+
 
 }

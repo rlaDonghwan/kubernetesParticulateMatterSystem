@@ -1,95 +1,307 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
-    <title>미세먼지</title>
-    <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=76oowvpvgr"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>미세먼지 정보</title>
+    <!-- 네이버 지도 API 스크립트 -->
+    <script src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=76oowvpvgr"></script>
+    <!-- 부트스트랩 CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <!-- 제이쿼리 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- 부트스트랩 자바스크립트 -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        #map {
+            width: 100%;
+            height: 100%; /* 뷰포트의 전체 높이를 사용 */
+        }
+    </style>
 </head>
 <body>
-<div th:insert="~{navigation.html}"></div>
+<div id="map"></div> <!-- 지도 표시 -->
 
-<div id="map" style="width:100%;height:700px;"></div>
 <script>
-    var mapOptions = {
-        center: new naver.maps.LatLng(37.3595704, 127.105399),
-        zoom: 10
-    };
+    let map;
 
-
-    // size 옵션이 생략되면 map DOM 요소의 HTML 렌더링 크기로 자동으로 조정됩니다.
-    var map = new naver.maps.Map('map', {
-        center: new naver.maps.LatLng(37.5666805, 126.9784147),
-        zoom: 13,
-        minZoom: 6,
-        mapTypeId: naver.maps.MapTypeId.HYBRID,
-        zoomControl: true,
-        zoomControlOptions: {
-            position: naver.maps.Position.TOP_RIGHT
-        },
-        mapDataControl: false,
-        logoControlOptions: {
-            position: naver.maps.Position.LEFT_BOTTOM
-        },
-        disableKineticPan: false
-    });
-
-    var semaphore = false;
-
-    naver.maps.Event.once(map, 'init', function() {
-        map.setOptions({
+    $(document).ready(function () {
+        const mapOptions = {
             mapTypeControl: true,
-            scaleControl: false,
-            logoControl: false
-        });
-
-        // 미니 맵이 들어갈 HTML 요소를 controls 객체에 추가합니다. 가장 오른쪽 아래에 위치하도록 다른 옵션들을 잠시 끕니다.
-        map.controls[naver.maps.Position.BOTTOM_RIGHT].push($("#minimap")[0]);
-        map.setOptions({
+            mapTypeControlOptions: {
+                style: naver.maps.MapTypeControlStyle.BUTTON,
+                position: naver.maps.Position.TOP_RIGHT
+            },
+            zoomControl: true,
+            zoomControlOptions: {
+                style: naver.maps.ZoomControlStyle.SMALL,
+                position: naver.maps.Position.TOP_RIGHT
+            },
             scaleControl: true,
+            scaleControlOptions: {
+                position: naver.maps.Position.BOTTOM_RIGHT
+            },
             logoControl: true,
-        });
+            logoControlOptions: {
+                position: naver.maps.Position.TOP_LEFT
+            },
+            mapDataControl: true,
+            mapDataControlOptions: {
+                position: naver.maps.Position.BOTTOM_LEFT
+            },
+            center: new naver.maps.LatLng(37.3595704, 127.105399),
+            zoom: 10,
+            mapTypeId: naver.maps.MapTypeId.NORMAL
+        };
 
-        var minimap = new naver.maps.Map('minimap', { //미니 맵 지도를 생성합니다.
-            bounds: map.getBounds(),
-            scrollWheel: false,
-            scaleControl: false,
-            mapDataControl: false,
-            logoControl: false
-        });
+        map = new naver.maps.Map('map', mapOptions);
 
-        naver.maps.Event.addListener(map, 'bounds_changed', function(bounds) {
-            if (semaphore) return;
 
-            minimap.fitBounds(bounds);
-        });
-        naver.maps.Event.addListener(map, 'mapTypeId_changed', function(mapTypeId) {
-            var toTypes = {
-                "normal": "hybrid",
-                "terrain": "satellite",
-                "satellite": "terrain",
-                "hybrid": "normal"
-            };
 
-            if (!toTypes[mapTypeId]) {
-                return;
-            }
 
-            minimap.setMapTypeId(toTypes[mapTypeId]);
-        });
-        naver.maps.Event.addListener(minimap, 'drag', function() {
-            semaphore = true;
-            map.panTo(minimap.getCenter());
-            naver.maps.Event.once(map, 'idle', function() {
-                semaphore = false;
-            });
+        // 현재 위치 마커 추가는 한 번만 실행
+        addCurrentLocationMarker();
 
+        const regions = ['gyeonggi', 'gangwon'];
+        regions.forEach(region => {
+            fetchStations(`/stations/recent/${region}`, map);
         });
     });
+    //----------------------------------------------------------------------------------------------------
+
+    // 현재 위치를 얻고 마커를 추가하는 함수
+    function addCurrentLocationMarker() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(onSuccessGeolocation, onErrorGeolocation, {
+                enableHighAccuracy: true,
+                maximumAge: 0,
+                timeout: Infinity
+            });
+        } else {
+            console.error('이 브라우저에서는 지오로케이션을 지원하지 않습니다.');
+        }
+    }
+    //----------------------------------------------------------------------------------------------------
+
+    function onSuccessGeolocation(position) {
+        const currentLocation = new naver.maps.LatLng(position.coords.latitude, position.coords.longitude);
+        const marker = new naver.maps.Marker({
+            position: currentLocation,
+            map: map,
+            title: "현재 위치",
+            icon: {
+                url: "/img/myLocation.png",
+                size: new naver.maps.Size(64, 64),
+                scaledSize: new naver.maps.Size(32, 32),
+                origin: new naver.maps.Point(0, 0),
+                anchor: new naver.maps.Point(15, 15)
+            }
+        });
+
+        map.setCenter(currentLocation);
+        map.setZoom(10);
+
+        console.log('Current location: ' + currentLocation.toString());
+    }
+    //----------------------------------------------------------------------------------------------------
+    function onErrorGeolocation(error) {
+        const center = map.getCenter();
+        console.error('Geolocation error: ' + error.message);
+    }
+    //----------------------------------------------------------------------------------------------------
+
+    // 측정소 마커를 표시하는 함수
+    function addStationMarkers(stations, map) {
+        stations.forEach(station => {
+            const stationInfo = station.stationInfo || station.gangwonStationInfo || station.gyeonggiStationInfo;
+            const airQuality = station.airQuality || station.gangwonAirQuality || station.gyeonggiAirQuality;
+
+            if (stationInfo && airQuality) {
+                const {dmX, dmY, stationName, addr} = stationInfo;
+                const {pm10Value, pm25Value, dataTime, sidoName} = airQuality;
+
+                if (dmX !== undefined && dmY !== undefined && stationName !== undefined && pm10Value !== undefined && pm25Value !== undefined) {
+                    const position = new naver.maps.LatLng(dmX, dmY);
+                    const iconUrl = getImageByPollutionLevel(pm10Value, pm25Value);
+                    const marker = new naver.maps.Marker({
+                        position: position,
+                        map: map,
+                        title: stationName,
+                        icon: {
+                            url: iconUrl,
+                            size: new naver.maps.Size(64, 64),
+                            scaledSize: new naver.maps.Size(32, 32),
+                            origin: new naver.maps.Point(0, 0),
+                            anchor: new naver.maps.Point(15, 15)
+                        }
+                    });
+
+                    let infowindow = new naver.maps.InfoWindow({
+                        maxWidth: 550,
+                        backgroundColor: "white",
+                        borderColor: "blue",
+                        borderWidth: 2,
+                        anchorSize: new naver.maps.Size(30, 30),
+                        anchorSkew: true,
+                        anchorColor: "white",
+                        pixelOffset: new naver.maps.Point(0, 0)
+                    });
+
+                    // 마커 클릭 이벤트 처리
+                    naver.maps.Event.addListener(marker, 'click', function () {
+                        if (!infowindow.getMap()) {
+                            const pm10Status = getPollutionStatus(getPollutionLevel(pm10Value, [15, 30, 40, 50, 75, 100, 150]));
+                            const pm25Status = getPollutionStatus(getPollutionLevel(pm25Value, [8, 15, 20, 25, 37, 50, 75]));
+                            const content = `
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col">
+                                        <p><strong>측정소 이름:</strong> ${stationName}</p>
+                                        <p><strong>측정 일시:</strong> ${formatDateTime(dataTime)}</p>
+                                        <p><strong>시/도:</strong> ${sidoName}</p>
+                                    </div>
+                                    <div class="col">
+                                        <p><strong>주소:</strong> ${addr}</p>
+                                        <p><strong>미세먼지 농도 (PM10):</strong> ${pm10Value} (${pm10Status})</p>
+                                        <p><strong>초미세먼지 농도 (PM2.5):</strong> ${pm25Value} (${pm25Status})</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                            infowindow.setContent(content);
+                            infowindow.open(map, marker);
+                        } else {
+                            infowindow.close();
+                        }
+                    });
+                } else {
+                    console.log('Invalid coordinates or PM levels:', dmX, dmY, stationName, pm10Value, pm25Value);
+                }
+            } else {
+                console.log('Missing station or air quality information');
+            }
+        });
+    }
+
+    //----------------------------------------------------------------------------------------------------
+
+    // 대기 오염에 따른 이미지 출력 함수
+    function getImageByPollutionLevel(pm10Value, pm25Value) {
+        const HOME_PATH = '/img'; // 기본 이미지 경로
+
+        // 등급에 따른 이미지 파일 이름
+        const icons = [
+            'best.png',      // 최고
+            'good.png',      // 좋음
+            'fine.png',      // 양호
+            'normal.png',    // 보통
+            'bad.png',       // 나쁨
+            'very_bad.png',  // 상당히 나쁨
+            'worst.png',     // 매우 나쁨
+            'hazardous.png'  // 최악
+        ];
+        //----------------------------------------------------------------------------------------------------
+
+        // 미세먼지와 초미세먼지 각각에 대한 등급 임계값
+        const pm10Thresholds = [15, 30, 40, 50, 75, 100, 150];
+        const pm25Thresholds = [8, 15, 20, 25, 37, 50, 75];
+
+        // 각 물질에 대한 등급 구하기
+        const pm10Level = getPollutionLevel(pm10Value, pm10Thresholds);
+        const pm25Level = getPollutionLevel(pm25Value, pm25Thresholds);
+
+        // 임계값을 기준으로 반복을 돌려서 임계값보다 낮으면 낮은 인덱스를 기준으로 그 등급을 리턴
+        function getPollutionLevel(value, thresholds) {
+            for (let i = 0; i < thresholds.length; i++) {
+                if (value <= thresholds[i]) {
+                    return i;
+                }
+            }
+            return thresholds.length; // 모든 임계값을 초과하는 경우
+        }
+
+        // 더 높은 등급을 사용하여 이미지 결정
+        const finalLevel = Math.max(pm10Level, pm25Level);
+
+        return HOME_PATH + '/' + icons[finalLevel]; // 최종 이미지 경로 반환
+    }
+
+    //----------------------------------------------------------------------------------------------------
+
+    function formatDateTime(dateTimeString) {
+        // Date 객체 생성
+        const dateTime = new Date(dateTimeString);
+        // 한국 시간대로 변경 (UTC +9)
+        dateTime.setHours(dateTime.getHours() - 9);
+
+        // 각 시간 요소를 추출하고 포매팅
+        const year = dateTime.getFullYear();
+        const month = String(dateTime.getMonth() + 1).padStart(2, '0');
+        const day = String(dateTime.getDate()).padStart(2, '0');
+        const hours = String(dateTime.getHours()).padStart(2, '0');
+        const minutes = String(dateTime.getMinutes()).padStart(2, '0');
+
+        // 최종 포맷팅된 문자열 반환
+        return `${year}년 ${month}월 ${day}일\n ${hours}시간 ${minutes}분`;
+    }
+
+    //----------------------------------------------------------------------------------------------------
+
+    // 마커 이미지 클릭 시 보일 미세먼지 등급에 대한 함수
+    function getPollutionStatus(level) {
+        const statusDescriptions = [
+            '매우 좋음', // 최고
+            '좋음',            // 좋음
+            '양호',            // 양호
+            '보통',            // 보통
+            '나쁨',            // 나쁨
+            '상당히 나쁨',     // 상당히 나쁨
+            '매우 나쁨',       // 매우 나쁨
+            '최악' // 최악
+        ];
+        return statusDescriptions[level];
+    }
+
+    //----------------------------------------------------------------------------------------------------
+
+    // 미세먼지 농도를 받고 임계값을 바탕으로 등급을 구한 후 위에 있는 함수에 전달
+    function getPollutionLevel(value, thresholds) {
+        for (let i = 0; i < thresholds.length; i++) {
+            if (value <= thresholds[i]) {
+                return i;
+            }
+        }
+        return thresholds.length; // 모든 임계값을 초과하는 경우
+    }
+
+    //----------------------------------------------------------------------------------------------------
+
+    // 비동기식 통신을 위한 함수 스프링 프레임워크랑 통신을 하는 역할을 함
+    function fetchStations(url, map) {
+        $.ajax({
+            url: url,
+            type: 'GET',
+            dataType: 'json',
+            success: function (stations) {
+                if (stations && stations.length) {
+                    addStationMarkers(stations, map);
+                } else {
+                    console.log('No stations data or empty data received for:', url);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('Failed to fetch stations for:', url, status, error);
+            }
+        });
+    }
+
+    //----------------------------------------------------------------------------------------------------
 </script>
 </body>
 </html>

@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Data
 public class GangwonStationInfo {
@@ -21,6 +23,7 @@ public class GangwonStationInfo {
 
     private double dmX;
     private double dmY;
-
+    @Column(columnDefinition = "TIMESTAMP")
+    private LocalDateTime inPutDataTime; // 입력 시간
 
 }

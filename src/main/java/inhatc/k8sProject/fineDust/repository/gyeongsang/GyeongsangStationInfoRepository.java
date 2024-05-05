@@ -5,11 +5,11 @@ import inhatc.k8sProject.fineDust.domain.gyeongsang.GyeongsangStationInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 
 @Repository
 public interface GyeongsangStationInfoRepository extends JpaRepository<GyeongsangStationInfo, Long> {
-
-
     GyeongsangStationInfo save(GyeongsangStationInfo gyeongsangStationInfo);
 
 }

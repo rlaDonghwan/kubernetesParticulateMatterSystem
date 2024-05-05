@@ -3,6 +3,8 @@ package inhatc.k8sProject.fineDust.domain.jeju;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Data
 public class JejuStationInfo {
@@ -19,6 +21,7 @@ public class JejuStationInfo {
 
     private double dmX;
     private double dmY;
-
+    @Column(columnDefinition = "TIMESTAMP")
+    private LocalDateTime inPutDataTime; // 입력 시간
 
 }

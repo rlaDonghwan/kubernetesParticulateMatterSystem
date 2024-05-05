@@ -19,7 +19,7 @@ public class GyeonggiStationInfoController {
 
     @GetMapping("/test")
     public ResponseEntity<String> updateStationInfoData(
-            @RequestParam(defaultValue = "서울,경기,인천") String stationNames) {
+            @RequestParam(defaultValue = "서울") String stationNames) {
 
         List<String> stationList = Arrays.asList(stationNames.split(",")); //쉼표 공백제거
 

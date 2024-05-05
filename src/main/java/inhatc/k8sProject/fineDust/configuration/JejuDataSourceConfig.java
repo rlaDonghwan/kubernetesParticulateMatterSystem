@@ -22,7 +22,7 @@ import java.util.Map;
         entityManagerFactoryRef = "jejuEntityManagerFactory",
         transactionManagerRef = "jejuTransactionManager"
 )
-public class JejuDataSourceConfig {
+public class  JejuDataSourceConfig {
 
     @Bean
     @ConfigurationProperties(prefix = "spring.jeju.datasource")

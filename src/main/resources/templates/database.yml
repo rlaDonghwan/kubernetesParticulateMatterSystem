@@ -1,0 +1,57 @@
+version: '3.7'
+
+services:
+  mysql-gyeonggi:
+    image: mysql:5.7
+    platform: linux/amd64
+    environment:
+      MYSQL_DATABASE: 'gyeonggi'
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      - "3306:3306"
+
+  mysql-gangwon:
+    image: mysql:5.7
+    platform: linux/amd64
+    environment:
+      MYSQL_DATABASE: 'gangwon'
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      - "3307:3306"
+
+  mysql-chungcheong:
+    image: mysql:5.7
+    platform: linux/amd64
+    environment:
+      MYSQL_DATABASE: 'chungcheong'
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      - "3308:3306"
+
+  mysql-gyeongsang:
+    image: mysql:5.7
+    platform: linux/amd64
+    environment:
+      MYSQL_DATABASE: 'gyeongsang'
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      - "3309:3306"
+
+  mysql-jeolla:
+    image: mysql:5.7
+    platform: linux/amd64
+    environment:
+      MYSQL_DATABASE: 'jeolla'
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      - "3310:3306"
+
+  mysql-jeju:
+    image: mysql:5.7
+    platform: linux/amd64
+    environment:
+      MYSQL_DATABASE: 'jeju'
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      - "3311:3306"
+

@@ -18,6 +18,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +32,7 @@ public class JejuStationInfoService {
     private String serviceKey;
 
     // 주기적으로 측정소 정보 업데이트
-    @Scheduled(fixedRate = 1800000) // 30분마다
+    @Scheduled(cron = "0 10 * * * *") // 매 시간의 10분에 실행
     public void updateAirQualityDataAutomatically() {
         String sidoName = "제주"; // 제주도의 시도명
         fetchAndSaveJejuStationInfo(sidoName); // 제주도 측정소 정보 가져와 저장
@@ -96,6 +97,9 @@ public class JejuStationInfoService {
         jejuStationInfo.setAddr(item.path("addr").asText(null)); // 주소
         jejuStationInfo.setDmX(item.path("dmX").asDouble()); // X 좌표
         jejuStationInfo.setDmY(item.path("dmY").asDouble()); // Y 좌표
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        LocalDateTime kstDateTime = currentDateTime.plusHours(9); // KST로 변환
+        jejuStationInfo.setInPutDataTime(kstDateTime);
         return jejuStationInfo;
     }
 
