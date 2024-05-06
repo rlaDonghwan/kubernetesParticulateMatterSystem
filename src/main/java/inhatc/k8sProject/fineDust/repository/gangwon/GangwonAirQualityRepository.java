@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface GangwonAirQualityRepository extends JpaRepository<GangwonAirQuality, Long> {
     Optional<GangwonAirQuality> findFirstByStationNameOrderByDataTimeDesc(String stationName);
 
+
 }

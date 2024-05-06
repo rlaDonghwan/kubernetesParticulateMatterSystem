@@ -32,18 +32,20 @@ public class JeollaAirQualityService {
     private final ObjectMapper objectMapper = new ObjectMapper(); // JSON 파싱을 위해 추가
     private static final Logger log = LoggerFactory.getLogger(JeollaAirQualityService.class);
 
+    //프로퍼티에서 API 키 값을 받아오는 어노테이션
     @Value("${service.key}")
     private String serviceKey;
 
-
-    @Scheduled(cron = "0 10 * * * *") // 매 시간의 10분에 실행
+    // 매 시간의 10분에 실행
+    @Scheduled(cron = "0 10 * * * *")
     public void updateAirQualityDataAutomatically() {
         // 스케줄링된 작업: 일정 간격으로 대기 질 데이터를 업데이트하는 메소드
         List<String> sidoList = Arrays.asList("전북", "전남", "광주");
         sidoList.forEach(this::fetchAndSaveJeollaAirQualityData);
     }
+    //--------------------------------------------------------------------------------------------------------------------------------------
 
-
+    // 전북, 전남, 광주 지역의 대기 질 데이터를 가져와 저장하는 메서드
     @Transactional("jeollaTransactionManager")
     public String fetchAndSaveJeollaAirQualityData(String sidoName) {
         try {
@@ -96,8 +98,10 @@ public class JeollaAirQualityService {
             return "Failure";
         }
     }
+    //--------------------------------------------------------------------------------------------------------------------------------------
 
 
+    // JSON 노드에서 대기 질 데이터를 파싱하는 메서드
     private JeollaAirQuality parseAirQualityData(JsonNode item) {
         JeollaAirQuality jeollaAirQuality = new JeollaAirQuality();
 
@@ -127,5 +131,6 @@ public class JeollaAirQualityService {
         return jeollaAirQuality; // 설정된 값을 담은 AirQuality 객체 반환
 
     }
+    //--------------------------------------------------------------------------------------------------------------------------------------
 
 }

@@ -30,17 +30,19 @@ public class JejuAirQualityService {
     private final ObjectMapper objectMapper = new ObjectMapper(); // JSON 파싱을 위해 추가
     private static final Logger log = LoggerFactory.getLogger(JejuAirQualityService.class);
 
+    //프로퍼티에서 API 키 값을 받아오는 어노테이션
     @Value("${service.key}")
     private String serviceKey;
 
-    // 주기적으로 대기 질 데이터 업데이트
-    @Scheduled(cron = "0 10 * * * *") // 매 시간의 10분에 실행
+    // 매 시간의 10분에 실행
+    @Scheduled(cron = "0 10 * * * *")
     public void updateAirQualityDataAutomatically() {
         String sidoName = "제주"; // 제주도의 시도명
         fetchAndSaveJejuAirQualityData(sidoName); // 제주도 대기 질 데이터 가져와 저장
     }
+    //--------------------------------------------------------------------------------------------------------------------------------------
 
-    // 대기 질 데이터를 가져와 저장하는 메서드
+    // 제주 지역 대기 질 데이터를 가져와 저장하는 메서드
     @Transactional("jejuTransactionManager")
     public String fetchAndSaveJejuAirQualityData(String sidoName) {
         try {
@@ -93,6 +95,7 @@ public class JejuAirQualityService {
             return "실패";
         }
     }
+    //--------------------------------------------------------------------------------------------------------------------------------------
 
     // JSON 데이터를 파싱하여 JejuAirQuality 객체로 변환하는 메서드
     private JejuAirQuality parseAirQualityData(JsonNode item) {
@@ -126,4 +129,7 @@ public class JejuAirQualityService {
         jejuAirQuality.setPm25Value(item.path("pm25Value").asDouble(0)); // PM10 값
         return jejuAirQuality; // 설정된 값을 담은 JejuAirQuality 객체 반환
     }
+    //--------------------------------------------------------------------------------------------------------------------------------------
+
+
 }

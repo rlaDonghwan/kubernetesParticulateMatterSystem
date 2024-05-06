@@ -30,6 +30,7 @@ public class GangwonAirQualityService {
     private final ObjectMapper objectMapper = new ObjectMapper(); // JSON 파싱을 위한 ObjectMapper
     private static final Logger log = LoggerFactory.getLogger(GangwonAirQualityService.class);
 
+    //프로퍼티에서 API 키 값을 받아오는 어노테이션
     @Value("${service.key}") // 애플리케이션 속성 파일에서 가져온 값
     private String serviceKey;
 
@@ -39,8 +40,9 @@ public class GangwonAirQualityService {
         String sidoName = "강원"; // 대상 지역 이름
         fetchAndSaveGangwonAirQualityData(sidoName); // 해당 지역의 대기 질 데이터 가져와 저장
     }
+    //--------------------------------------------------------------------------------------------------------------------------------------
 
-    // 대기 질 데이터를 가져와 저장하는 메서드
+    // 강원도 대기 질 데이터를 가져와 저장하는 메서드
     @Transactional("gangwonTransactionManager")
     public String fetchAndSaveGangwonAirQualityData(String sidoName) {
         try {
@@ -96,6 +98,7 @@ public class GangwonAirQualityService {
             return "실패";
         }
     }
+    //--------------------------------------------------------------------------------------------------------------------------------------
 
     // JSON 데이터를 파싱하여 GangwonAirQuality 객체로 변환하는 메서드
     private GangwonAirQuality parseAirQualityData(JsonNode item) {
@@ -127,4 +130,5 @@ public class GangwonAirQualityService {
 
         return gangwonAirQuality;
     }
+    //--------------------------------------------------------------------------------------------------------------------------------------
 }

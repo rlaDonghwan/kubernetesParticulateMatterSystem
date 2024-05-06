@@ -37,18 +37,19 @@ public class GyeonggiStationInfoService {
     private final ObjectMapper objectMapper = new ObjectMapper(); // JSON 파싱을 위한 ObjectMapper
     private static final Logger log = LoggerFactory.getLogger(GyeonggiStationInfoService.class);
 
-    @Value("${service.key}") // 애플리케이션 속성 파일에서 가져온 값
+    //프로퍼티에서 API 키 값을 받아오는 어노테이션
+    @Value("${service.key}")
     private String serviceKey;
 
-
-    @Scheduled(cron = "0 10 * * * *") // 매 시간의 10분에 실행
+    // 매 시간의 10분에 실행
+    @Scheduled(cron = "0 10 * * * *")
     public void updateAirQualityDataAutomatically() {
         List<String> sidoList = Arrays.asList("서울", "경기", "인천");
         sidoList.forEach(this::fetchAndSaveGyeonggiStationInfo);
     }
     //--------------------------------------------------------------------------------------------------------------------------------------
 
-    // 특정 지역(sidoName)의 측정소 정보를 가져와 저장하는 메소드
+    // 서울, 경기, 인천 지역의 측정소 정보를 가져와 저장하는 메소드
     @Transactional("gyeonggiTransactionManager")
     public String fetchAndSaveGyeonggiStationInfo(String sidoName) {
         try {
@@ -90,6 +91,7 @@ public class GyeonggiStationInfoService {
             JsonNode rootNode = objectMapper.readTree(response);
             JsonNode items = rootNode.path("response").path("body").path("items");
 
+            //값을 불러 올때마다 해당 지역의 있는 측정소 정보를 삭제하는 메서드 호출
             deleteExistingStationInfo(sidoName);
 
             for (JsonNode item : items) {
@@ -111,6 +113,8 @@ public class GyeonggiStationInfoService {
         List<GyeonggiStationInfo> existingStations = gyeonggiStationInfoRepository.findByAddrContaining(sidoName);
         gyeonggiStationInfoRepository.deleteAll(existingStations);
     }
+    //--------------------------------------------------------------------------------------------------------------------------------------
+
 
     // JSON 데이터에서 측정소 정보를 파싱하는 메소드
     private GyeonggiStationInfo parseStationInfoData(JsonNode item) {
@@ -137,6 +141,8 @@ public class GyeonggiStationInfoService {
         // 최근 데이터의 시간을 기준으로 설정
         LocalDateTime lastDataTime = nearestEntry.map(GyeonggiStationInfo::getInPutDataTime)
                 .orElse(LocalDateTime.now().minusMinutes(5)); // 최근 데이터가 없을 경우 현재 시간에서 5분 전으로 설정
+        System.out.println(LocalDateTime.now());
+        System.out.println(lastDataTime);
 
         // 계산된 시간부터 현재 시간까지의 데이터를 조회
         return gyeonggiStationInfoRepository.findByInPutDataTimeBetween(lastDataTime, LocalDateTime.now());
@@ -156,7 +162,6 @@ public class GyeonggiStationInfoService {
             return airQualityOptional.map(aq -> new StationAirQualityInfoDTO(station, aq)).orElse(null);
         }).filter(Objects::nonNull).collect(Collectors.toList()); // null이 아닌 StationAirQualityInfo만 필터링하여 반환
     }
-
     //--------------------------------------------------------------------------------------------------------------------------------------
 
 

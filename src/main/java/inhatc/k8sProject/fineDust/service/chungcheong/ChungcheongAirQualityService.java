@@ -32,16 +32,20 @@ public class ChungcheongAirQualityService {
     private final ObjectMapper objectMapper = new ObjectMapper(); // JSON 파싱을 위한 ObjectMapper
     private static final Logger log = LoggerFactory.getLogger(ChungcheongAirQualityService.class);
 
+    //프로퍼티에서 API 키 값을 받아오는 어노테이션
     @Value("${service.key}")
     private String serviceKey;
 
-    @Scheduled(cron = "0 10 * * * *") // 매 시간의 10분에 실행
+    // 매 시간의 10분에 실행
+    @Scheduled(cron = "0 10 * * * *")
     public void updateAirQualityDataAutomatically() {
         // 스케줄링된 작업: 일정 간격으로 대기 질 데이터를 업데이트하는 메소드
         List<String> sidoList = Arrays.asList("충남", "충북", "세종", "대전");
         sidoList.forEach(this::fetchAndSaveChungcheongAirQualityData);
     }
+    //--------------------------------------------------------------------------------------------------------------------------------------
 
+    // 충북, 충남, 대전, 세종 지역의 대기 질 정보를 가져와 저장하는 메서드
     @Transactional("chungcheongTransactionManager")
     public String fetchAndSaveChungcheongAirQualityData(String sidoName) {
         try {
@@ -97,7 +101,9 @@ public class ChungcheongAirQualityService {
             return "실패";
         }
     }
+    //--------------------------------------------------------------------------------------------------------------------------------------
 
+    // JSON 노드에서 측정소 데이터를 파싱하는 메서드
     private ChungcheongAirQuality parseAirQualityData(JsonNode item) {
         // JSON 데이터를 파싱하여 chungcheongAirQuality 객체로 변환하는 메서드
         ChungcheongAirQuality chungcheongAirQuality = new ChungcheongAirQuality();
@@ -129,4 +135,5 @@ public class ChungcheongAirQualityService {
 
         return chungcheongAirQuality; // 설정된 값을 담은 GyeongsangAirQuality 객체 반환
     }
+    //--------------------------------------------------------------------------------------------------------------------------------------
 }

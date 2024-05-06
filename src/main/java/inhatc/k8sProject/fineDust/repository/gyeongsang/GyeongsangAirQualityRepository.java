@@ -5,6 +5,9 @@ import inhatc.k8sProject.fineDust.domain.gyeongsang.GyeongsangAirQuality;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface GyeongsangAirQualityRepository extends JpaRepository<GyeongsangAirQuality, Long> {
+    Optional<GyeongsangAirQuality> findFirstByStationNameOrderByDataTimeDesc(String stationName);
 }

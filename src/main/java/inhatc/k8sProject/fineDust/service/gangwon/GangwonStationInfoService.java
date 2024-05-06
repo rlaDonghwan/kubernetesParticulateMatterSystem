@@ -36,6 +36,7 @@ public class GangwonStationInfoService {
     private final ObjectMapper objectMapper = new ObjectMapper(); // JSON 파싱을 위한 ObjectMapper
     private static final Logger log = LoggerFactory.getLogger(GangwonStationInfoService.class);
 
+    //프로퍼티에서 API 키 값을 받아오는 어노테이션
     @Value("${service.key}") // 애플리케이션 속성 파일에서 가져온 값
     private String serviceKey;
 
@@ -47,7 +48,7 @@ public class GangwonStationInfoService {
     }
     //------------------------------------------------------------------------------------------------------------------------
 
-    // 측정소 정보를 가져와 저장하는 메서드
+    // 강원도 측정소 정보를 가져와 저장하는 메서드
     @Transactional("gangwonTransactionManager")
     public String fetchAndSaveStationInfo(String sidoName) {
         try {
@@ -90,6 +91,9 @@ public class GangwonStationInfoService {
             JsonNode rootNode = objectMapper.readTree(response);
             JsonNode items = rootNode.path("response").path("body").path("items");
 
+            deleteExistingStationInfo(sidoName);
+
+
             // JSON 데이터 파싱 및 저장
             for (JsonNode item : items) {
                 GangwonStationInfo stationInfo = parseStationInfoData(item);
@@ -103,6 +107,13 @@ public class GangwonStationInfoService {
         }
     }
     //------------------------------------------------------------------------------------------------------------------------
+
+    // 해당 지역의 기존 측정소 정보를 삭제하는 메소드
+    private void deleteExistingStationInfo(String sidoName) {
+        List<GangwonStationInfo> existingStations = gangwonStationInfoRepository.findByAddrContaining(sidoName);
+        gangwonStationInfoRepository.deleteAll(existingStations);
+    }
+    //--------------------------------------------------------------------------------------------------------------------------------------
 
     // JSON 데이터를 파싱하여 GangwonStationInfo 객체로 변환하는 메서드
     private GangwonStationInfo parseStationInfoData(JsonNode item) {
@@ -124,10 +135,10 @@ public class GangwonStationInfoService {
     @Transactional(readOnly = true)
     public List<GangwonStationInfo> findRecentGangownStationsData() {
         // 데이터베이스에서 가장 최근에 입력된 데이터의 시간을 조회
-        Optional<GangwonStationInfo> latestEntry = gangwonStationInfoRepository.findTopByOrderByInPutDataTimeDesc();
+        Optional<GangwonStationInfo> nearestEntry = gangwonStationInfoRepository.findTopByOrderByInPutDataTimeDesc();
 
         // 만약 최근 데이터가 존재하면 해당 데이터의 시간을 사용하고, 존재하지 않으면 현재 시간에서 5분을 뺀 시간을 기준으로 설정
-        LocalDateTime lastDataTime = latestEntry.map(GangwonStationInfo::getInPutDataTime)
+        LocalDateTime lastDataTime = nearestEntry.map(GangwonStationInfo::getInPutDataTime)
                 .orElse(LocalDateTime.now().minusMinutes(5));
 
         // 계산된 시간부터 현재 시간까지의 데이터를 조회

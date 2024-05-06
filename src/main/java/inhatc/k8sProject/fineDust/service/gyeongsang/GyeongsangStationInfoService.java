@@ -2,7 +2,12 @@ package inhatc.k8sProject.fineDust.service.gyeongsang;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import inhatc.k8sProject.fineDust.domain.gyeonggi.GyeonggiAirQuality;
+import inhatc.k8sProject.fineDust.domain.gyeonggi.GyeonggiStationInfo;
+import inhatc.k8sProject.fineDust.domain.gyeongsang.GyeongsangAirQuality;
 import inhatc.k8sProject.fineDust.domain.gyeongsang.GyeongsangStationInfo;
+import inhatc.k8sProject.fineDust.dto.StationAirQualityInfoDTO;
+import inhatc.k8sProject.fineDust.repository.gyeongsang.GyeongsangAirQualityRepository;
 import inhatc.k8sProject.fineDust.repository.gyeongsang.GyeongsangStationInfoRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -21,32 +26,37 @@ import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class GyeongsangStationInfoService {
 
     private final GyeongsangStationInfoRepository gyeongsangStationInfoRepository;
+    private final GyeongsangAirQualityRepository gyeongsangAirQualityRepository;
     private final ObjectMapper objectMapper = new ObjectMapper(); // JSON 파싱을 위한 ObjectMapper
     private static final Logger log = LoggerFactory.getLogger(GyeongsangStationInfoRepository.class);
 
+    //프로퍼티에서 API 키 값을 받아오는 어노테이션
     @Value("${service.key}")
     private String serviceKey;
 
-    // 스케줄링된 작업: 주석 처리하여 현재는 스케줄링이 비활성화되어 있음
-    @Scheduled(cron = "0 10 * * * *") // 매 시간의 10분에 실행
+    //매 시간의 10분에 실행
+    @Scheduled(cron = "0 10 * * * *")
     public void updateAirQualityDataAutomatically() {
         // 스케줄링된 작업: 일정 간격으로 대기 질 데이터를 업데이트하는 메소드
         List<String> sidoList = Arrays.asList("경북", "경남", "대구", "울산", "부산");
         sidoList.forEach(this::fetchAndSaveGyeongsangStationInfo);
     }
 
-    // 대기 측정소 정보를 가져와 저장하는 메서드
+    // 경북, 경남, 대구, 울산, 부산 지역의 측정소 정보를 가져와 저장하는 메서드
     @Transactional("gyeongsangTransactionManager")
-    public String fetchAndSaveGyeongsangStationInfo(String address) {
+    public String fetchAndSaveGyeongsangStationInfo(String sidoName) {
         try {
             StringBuilder requestUrlBuilder = new StringBuilder("https://apis.data.go.kr/B552584/MsrstnInfoInqireSvc/getMsrstnList?");
-            requestUrlBuilder.append("&addr=").append(URLEncoder.encode(address, "UTF-8"));
+            requestUrlBuilder.append("&addr=").append(URLEncoder.encode(sidoName, "UTF-8"));
             requestUrlBuilder.append("&pageNo=").append(URLEncoder.encode("1", "UTF-8"));
             requestUrlBuilder.append("&numOfRows=").append(URLEncoder.encode("100", "UTF-8"));
             requestUrlBuilder.append("&serviceKey=").append(serviceKey);
@@ -82,6 +92,9 @@ public class GyeongsangStationInfoService {
             JsonNode rootNode = objectMapper.readTree(response);
             JsonNode items = rootNode.path("response").path("body").path("items");
 
+            //값을 불러 올때마다 해당 지역의 있는 측정소 정보를 삭제하는 메서드 호출
+            deleteExistingStationInfo(sidoName);
+
             for (JsonNode item : items) {
                 GyeongsangStationInfo gyeongsangStationInfo = parseStationInfoData(item);
                 gyeongsangStationInfoRepository.save(gyeongsangStationInfo);
@@ -93,8 +106,16 @@ public class GyeongsangStationInfoService {
             return "실패";
         }
     }
+    //--------------------------------------------------------------------------------------------------------------------------------------
 
-    // JSON 데이터를 파싱하여 GyeongsangStationInfo 객체로 변환하는 메서드
+    // 해당 지역의 기존 측정소 정보를 삭제하는 메소드
+    private void deleteExistingStationInfo(String sidoName) {
+        List<GyeongsangStationInfo> existingStations = gyeongsangStationInfoRepository.findByAddrContaining(sidoName);
+        gyeongsangStationInfoRepository.deleteAll(existingStations);
+    }
+    //--------------------------------------------------------------------------------------------------------------------------------------
+
+    // JSON 데이터에서 측정소 정보를 파싱하는 메소드
     private GyeongsangStationInfo parseStationInfoData(JsonNode item) {
         GyeongsangStationInfo gyeongsangStationInfo = new GyeongsangStationInfo();
         gyeongsangStationInfo.setStationName(item.path("stationName").asText(null)); // 측정소 이름 설정
@@ -108,5 +129,37 @@ public class GyeongsangStationInfoService {
 
         return gyeongsangStationInfo;
     }
+
+    // 가장 최근에 입력된 측정소 데이터를 조회하는 메소드
+    @Transactional(readOnly = true)
+    public List<GyeongsangStationInfo> findRecentGyeongsangStationsData() {
+        // 현재 시간 이하에서 가장 가까운 시간대의 데이터를 조회
+        Optional<GyeongsangStationInfo> nearestEntry = gyeongsangStationInfoRepository.findTopByOrderByInPutDataTimeDesc();
+
+        // 최근 데이터의 시간을 기준으로 설정
+        LocalDateTime lastDataTime = nearestEntry.map(GyeongsangStationInfo::getInPutDataTime)
+                .orElse(LocalDateTime.now().minusMinutes(5)); // 최근 데이터가 없을 경우 현재 시간에서 5분 전으로 설정
+        System.out.println(LocalDateTime.now());
+        System.out.println(lastDataTime);
+
+        // 계산된 시간부터 현재 시간까지의 데이터를 조회
+        return gyeongsangStationInfoRepository.findByInPutDataTimeBetween(lastDataTime, LocalDateTime.now());
+    }
+
+    //--------------------------------------------------------------------------------------------------------------------------------------
+
+    // 최근 측정소와 그에 대한 공기질 정보를 조회하는 메소드
+    @Transactional(readOnly = true)
+    public List<StationAirQualityInfoDTO> findRecentGyeongsangStationsWithAirQuality() {
+        List<GyeongsangStationInfo> stations = gyeongsangStationInfoRepository.findAll();
+        log.info("Fetched {} stations data.", stations.size()); // 조회된 측정소 수 로그 기록
+        return stations.stream().map(station -> {
+            Optional<GyeongsangAirQuality> airQualityOptional = gyeongsangAirQualityRepository
+                    .findFirstByStationNameOrderByDataTimeDesc(station.getStationName());
+            airQualityOptional.ifPresent(aq -> log.info("Air quality data for {}: PM10 = {}, PM2.5 = {}", station.getStationName(), aq.getPm10Value(), aq.getPm25Value()));
+            return airQualityOptional.map(aq -> new StationAirQualityInfoDTO(station, aq)).orElse(null);
+        }).filter(Objects::nonNull).collect(Collectors.toList()); // null이 아닌 StationAirQualityInfo만 필터링하여 반환
+    }
+    //--------------------------------------------------------------------------------------------------------------------------------------
 
 }

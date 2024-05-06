@@ -19,4 +19,6 @@ public interface GangwonStationInfoRepository extends JpaRepository<GangwonStati
     Optional<GangwonStationInfo> findTopByOrderByInPutDataTimeDesc();
 
     List<GangwonStationInfo> findByInPutDataTimeBetween(LocalDateTime lastDataTime, LocalDateTime nowDateTime);
+
+    List<GangwonStationInfo> findByAddrContaining(String addrSnippet);
 }
