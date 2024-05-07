@@ -36,8 +36,8 @@ public class ChungcheongAirQualityService {
     @Value("${service.key}")
     private String serviceKey;
 
-    // 매 시간의 10분에 실행
-    @Scheduled(cron = "0 10 * * * *")
+
+    @Scheduled(cron = "0 0,30 * * * *")
     public void updateAirQualityDataAutomatically() {
         // 스케줄링된 작업: 일정 간격으로 대기 질 데이터를 업데이트하는 메소드
         List<String> sidoList = Arrays.asList("충남", "충북", "세종", "대전");
@@ -136,4 +136,5 @@ public class ChungcheongAirQualityService {
         return chungcheongAirQuality; // 설정된 값을 담은 GyeongsangAirQuality 객체 반환
     }
     //--------------------------------------------------------------------------------------------------------------------------------------
+
 }

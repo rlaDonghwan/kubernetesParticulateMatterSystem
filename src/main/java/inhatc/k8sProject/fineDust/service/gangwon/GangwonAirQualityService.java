@@ -34,8 +34,7 @@ public class GangwonAirQualityService {
     @Value("${service.key}") // 애플리케이션 속성 파일에서 가져온 값
     private String serviceKey;
 
-    // 일정 시간마다 대기 질 데이터를 업데이트하는 예약된 작업
-    @Scheduled(cron = "0 10 * * * *") // 매 시간의 10분에 실행
+    @Scheduled(cron = "0 0,30 * * * *")
     public void updateAirQualityDataAutomatically() {
         String sidoName = "강원"; // 대상 지역 이름
         fetchAndSaveGangwonAirQualityData(sidoName); // 해당 지역의 대기 질 데이터 가져와 저장

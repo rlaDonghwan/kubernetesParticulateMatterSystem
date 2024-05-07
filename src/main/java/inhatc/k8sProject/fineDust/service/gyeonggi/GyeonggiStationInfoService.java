@@ -41,8 +41,8 @@ public class GyeonggiStationInfoService {
     @Value("${service.key}")
     private String serviceKey;
 
-    // 매 시간의 10분에 실행
-    @Scheduled(cron = "0 10 * * * *")
+
+    @Scheduled(cron = "0 0,30 * * * *")
     public void updateAirQualityDataAutomatically() {
         List<String> sidoList = Arrays.asList("서울", "경기", "인천");
         sidoList.forEach(this::fetchAndSaveGyeonggiStationInfo);

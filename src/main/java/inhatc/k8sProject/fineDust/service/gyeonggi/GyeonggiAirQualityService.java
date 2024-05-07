@@ -20,6 +20,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,8 +36,8 @@ public class GyeonggiAirQualityService {
     @Value("${service.key}")
     private String serviceKey;
 
-    // 매 시간의 10분에 실행
-    @Scheduled(cron = "0 10 * * * *")
+    // 매 시간의 15분에 실행
+    @Scheduled(cron = "0 0,30 * * * *")
     public void updateAirQualityDataAutomatically() {
         List<String> sidoList = Arrays.asList("서울", "경기", "인천");
         sidoList.forEach(this::fetchAndSaveGyeonggiAirQualityData);
@@ -100,25 +101,40 @@ public class GyeonggiAirQualityService {
     }
     //--------------------------------------------------------------------------------------------------------------------------------------
 
-    // JSON 노드에서 대기 질 데이터를 파싱하는 메서드
+    // JSON 노드에서 측정소 데이터를 파싱하는 메서드
     private GyeonggiAirQuality parseAirQualityData(JsonNode item) {
+        // JSON 데이터를 파싱하여 gyeonggiAirQuality 객체로 변환하는 메서드
         GyeonggiAirQuality gyeonggiAirQuality = new GyeonggiAirQuality();
 
         // 측정 시간을 파싱하고 KST(Korean Standard Time)로 조정
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        LocalDateTime dateTime = LocalDateTime.parse(item.path("dataTime").asText(), formatter);
+        String dateTimeStr = item.path("dataTime").asText(null);
+        LocalDateTime dateTime = null;
+        if (dateTimeStr != null) {
+            try {
+                dateTime = LocalDateTime.parse(dateTimeStr, formatter);
+            } catch (DateTimeParseException e) {
+                log.error("날짜 시간을 구문 분석하지 못했습니다: " + dateTimeStr, e);
+                // 오류 처리 또는 기본 날짜 시간 설정
+                dateTime = LocalDateTime.now(); // 예시 기본값, 필요에 따라 조정
+            }
+        } else {
+            // null 경우 처리 또는 기본 날짜 시간 설정
+            dateTime = LocalDateTime.now(); // 예시 기본값, 필요에 따라 조정
+        }
         LocalDateTime kstDateTime = dateTime.plusHours(9); // KST로 변환
         gyeonggiAirQuality.setDataTime(kstDateTime); // 측정 시간 설정
 
-        // JSON 객체에서 다른 값들 설정
-        gyeonggiAirQuality.setStationName(item.path("stationName").asText(null)); // 측정소 이름 설정
-        gyeonggiAirQuality.setSidoName(item.path("sidoName").asText(null)); // 지역 이름 설정
-        gyeonggiAirQuality.setPm10Value(item.path("pm10Value").asDouble(0)); // PM10 값 설정
-        gyeonggiAirQuality.setPm25Value(item.path("pm25Value").asDouble(0)); // PM2.5 값 설정
+        // 나머지 값들 설정: JSON 객체에서 각 대기 질 지표 값을 읽어와서 chungcheongAirQuality 객체의 속성으로 설정
+        gyeonggiAirQuality.setStationName(item.path("stationName").asText(null)); // 측정소 이름
+        gyeonggiAirQuality.setSidoName(item.path("sidoName").asText(null)); // 지역 이름
+        gyeonggiAirQuality.setPm10Value(item.path("pm10Value").asDouble(0)); // PM10 값
+        gyeonggiAirQuality.setPm25Value(item.path("pm25Value").asDouble(0)); // PM2.5 값
 
-        return gyeonggiAirQuality; // 파싱된 값을 담은 GyeonggiAirQuality 객체 반환
+        return gyeonggiAirQuality; // 설정된 값을 담은 GyeongsangAirQuality 객체 반환
     }
     //--------------------------------------------------------------------------------------------------------------------------------------
+
 
 
 }

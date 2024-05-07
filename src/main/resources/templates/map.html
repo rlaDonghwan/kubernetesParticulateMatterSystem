@@ -77,41 +77,59 @@
 
     // 현재 위치를 얻고 마커를 추가하는 함수
     function addCurrentLocationMarker() {
+        // 브라우저에서 지오로케이션을 지원하는지 확인
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(onSuccessGeolocation, onErrorGeolocation, {
-                enableHighAccuracy: true,
-                maximumAge: 0,
-                timeout: Infinity
-            });
+            // 현재 위치 정보를 요청하고 성공 시 onSuccessGeolocation 함수 호출
+            // 실패 시 onErrorGeolocation 함수 호출
+            navigator.geolocation.getCurrentPosition(
+                onSuccessGeolocation, // 성공 시 호출되는 콜백 함수
+                onErrorGeolocation,   // 실패 시 호출되는 콜백 함수
+                {
+                    enableHighAccuracy: true, // 정확도 높은 위치 정보 요청
+                    maximumAge: 0,            // 캐시된 위치 정보를 사용하지 않음
+                    timeout: Infinity         // 위치 요청이 무한정 대기하도록 설정
+                }
+            );
         } else {
             console.error('이 브라우저에서는 지오로케이션을 지원하지 않습니다.');
         }
     }
     //----------------------------------------------------------------------------------------------------
 
+    // 지오로케이션 요청 성공 시 호출되는 함수
     function onSuccessGeolocation(position) {
+        // 사용자 현재 위치 정보를 기반으로 naver.maps.LatLng 객체 생성
         const currentLocation = new naver.maps.LatLng(position.coords.latitude, position.coords.longitude);
+
+        // 마커 객체를 생성하여 지도에 표시
         const marker = new naver.maps.Marker({
-            position: currentLocation,
-            map: map,
-            title: "현재 위치",
+            position: currentLocation, // 마커 위치 지정
+            map: map,                  // 마커를 추가할 지도 객체
+            title: "현재 위치",         // 마커에 표시될 제목
             icon: {
-                url: "/img/myLocation.png",
-                size: new naver.maps.Size(64, 64),
-                scaledSize: new naver.maps.Size(32, 32),
-                origin: new naver.maps.Point(0, 0),
-                anchor: new naver.maps.Point(15, 15)
+                url: "/img/myLocation.png",                 // 마커 아이콘 이미지 경로
+                size: new naver.maps.Size(64, 64),          // 원본 아이콘 크기
+                scaledSize: new naver.maps.Size(32, 32),    // 축소된 아이콘 크기
+                origin: new naver.maps.Point(0, 0),         // 원본 이미지에서 아이콘이 추출될 위치
+                anchor: new naver.maps.Point(15, 15)        // 마커의 중심점을 아이콘의 앵커로 지정
             }
         });
 
+        // 지도의 중심을 현재 위치로 이동하고 줌 레벨을 10으로 설정
         map.setCenter(currentLocation);
         map.setZoom(10);
 
+        // 현재 위치 정보를 콘솔에 출력
         console.log('Current location: ' + currentLocation.toString());
     }
     //----------------------------------------------------------------------------------------------------
+
+    // 지오로케이션 요청 실패 시 호출되는 함수
     function onErrorGeolocation(error) {
+        // 현재 지도 중심 위치를 가져옴
         const center = map.getCenter();
+
+        // 에러 메시지를 콘솔에 출력
         console.error('Geolocation error: ' + error.message);
     }
     //----------------------------------------------------------------------------------------------------
@@ -205,7 +223,7 @@
             'worst.png',     // 매우 나쁨
             'hazardous.png'  // 최악
         ];
-        //----------------------------------------------------------------------------------------------------
+        const checkingIcon = 'checking.png';
 
         // 미세먼지와 초미세먼지 각각에 대한 등급 임계값
         const pm10Thresholds = [15, 30, 40, 50, 75, 100, 150];
@@ -225,11 +243,17 @@
             return thresholds.length; // 모든 임계값을 초과하는 경우
         }
 
+        // 미세먼지와 초미세먼지 값이 0일 경우
+        if (pm10Value === 0 && pm25Value === 0) {
+            return HOME_PATH + '/' + checkingIcon;
+        }
+
         // 더 높은 등급을 사용하여 이미지 결정
         const finalLevel = Math.max(pm10Level, pm25Level);
 
         return HOME_PATH + '/' + icons[finalLevel]; // 최종 이미지 경로 반환
     }
+
     //----------------------------------------------------------------------------------------------------
 
     //DateTime 포멧을 파싱해주는 함수
@@ -247,7 +271,7 @@
         const minutes = String(dateTime.getMinutes()).padStart(2, '0');
 
         // 최종 포맷팅된 문자열 반환
-        return `${year}년 ${month}월 ${day}일\n ${hours}시간 ${minutes}분`;
+        return `${year}년 ${month}월 ${day}일\n ${hours}시`;
     }
     //----------------------------------------------------------------------------------------------------
 

@@ -2,8 +2,6 @@ package inhatc.k8sProject.fineDust.service.jeju;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import inhatc.k8sProject.fineDust.domain.gyeonggi.GyeonggiAirQuality;
-import inhatc.k8sProject.fineDust.domain.gyeonggi.GyeonggiStationInfo;
 import inhatc.k8sProject.fineDust.domain.jeju.JejuAirQuality;
 import inhatc.k8sProject.fineDust.domain.jeju.JejuStationInfo;
 import inhatc.k8sProject.fineDust.dto.StationAirQualityInfoDTO;
@@ -42,8 +40,8 @@ public class JejuStationInfoService {
     @Value("${service.key}")
     private String serviceKey;
 
-    // 매 시간의 10분에 실행
-    @Scheduled(cron = "0 10 * * * *")
+
+    @Scheduled(cron = "0 0,30 * * * *")
     public void updateAirQualityDataAutomatically() {
         String sidoName = "제주";
         fetchAndSaveJejuStationInfo(sidoName); // 제주도 측정소 정보 가져와 저장

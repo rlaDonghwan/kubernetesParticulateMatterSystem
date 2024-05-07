@@ -41,8 +41,8 @@ public class ChungcheongStationInfoService {
     @Value("${service.key}")
     private String serviceKey;
 
-    // 스케줄링된 작업: 주석 처리하여 현재는 스케줄링이 비활성화되어 있음
-    @Scheduled(cron = "0 10 * * * *") // 매 시간의 10분에 실행
+
+    @Scheduled(cron = "0 0,30 * * * *")
     public void updateAirQualityDataAutomatically() {
         // 스케줄링된 작업: 일정 간격으로 대기 질 데이터를 업데이트하는 메소드
         List<String> sidoList = Arrays.asList("충남", "충북", "세종", "대전");

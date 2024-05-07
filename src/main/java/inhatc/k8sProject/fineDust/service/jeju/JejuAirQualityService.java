@@ -34,8 +34,8 @@ public class JejuAirQualityService {
     @Value("${service.key}")
     private String serviceKey;
 
-    // 매 시간의 10분에 실행
-    @Scheduled(cron = "0 10 * * * *")
+
+    @Scheduled(cron = "0 0,30 * * * *")
     public void updateAirQualityDataAutomatically() {
         String sidoName = "제주"; // 제주도의 시도명
         fetchAndSaveJejuAirQualityData(sidoName); // 제주도 대기 질 데이터 가져와 저장
