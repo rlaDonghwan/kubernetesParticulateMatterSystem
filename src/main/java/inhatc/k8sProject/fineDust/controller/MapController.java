@@ -1,6 +1,5 @@
 package inhatc.k8sProject.fineDust.controller;
 
-import inhatc.k8sProject.fineDust.domain.gyeongsang.GyeongsangStationInfo;
 import inhatc.k8sProject.fineDust.dto.StationAirQualityInfoDTO;
 import inhatc.k8sProject.fineDust.service.chungcheong.ChungcheongStationInfoService;
 import inhatc.k8sProject.fineDust.service.gangwon.GangwonStationInfoService;

@@ -18,6 +18,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -35,7 +36,7 @@ public class JejuAirQualityService {
     private String serviceKey;
 
 
-    @Scheduled(cron = "0 0,30 * * * *")
+    @Scheduled(cron = "0 10 * * * *")
     public void updateAirQualityDataAutomatically() {
         String sidoName = "제주"; // 제주도의 시도명
         fetchAndSaveJejuAirQualityData(sidoName); // 제주도 대기 질 데이터 가져와 저장
@@ -44,17 +45,16 @@ public class JejuAirQualityService {
 
     // 제주 지역 대기 질 데이터를 가져와 저장하는 메서드
     @Transactional("jejuTransactionManager")
-    public String fetchAndSaveJejuAirQualityData(String sidoName) {
+    public void fetchAndSaveJejuAirQualityData(String sidoName) {
         try {
-            StringBuilder requestUrlBuilder = new StringBuilder("https://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty?");
-            requestUrlBuilder.append("sidoName=").append(URLEncoder.encode(sidoName, "UTF-8"));
-            requestUrlBuilder.append("&pageNo=").append(URLEncoder.encode("1", "UTF-8"));
-            requestUrlBuilder.append("&numOfRows=").append(URLEncoder.encode("100", "UTF-8"));
-            requestUrlBuilder.append("&returnType=").append(URLEncoder.encode("json", "UTF-8"));
-            requestUrlBuilder.append("&serviceKey=").append(serviceKey); // 서비스키는 사용자의 실제 키로 변경해야 합니다.
-            requestUrlBuilder.append("&ver=").append(URLEncoder.encode("1.0", "UTF-8"));
+            String requestUrlBuilder = "https://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty?" + "sidoName=" + URLEncoder.encode(sidoName, StandardCharsets.UTF_8) +
+                    "&pageNo=" + URLEncoder.encode("1", StandardCharsets.UTF_8) +
+                    "&numOfRows=" + URLEncoder.encode("100", StandardCharsets.UTF_8) +
+                    "&returnType=" + URLEncoder.encode("json", StandardCharsets.UTF_8) +
+                    "&serviceKey=" + serviceKey + // 서비스키는 사용자의 실제 키로 변경해야 합니다.
+                    "&ver=" + URLEncoder.encode("1.0", StandardCharsets.UTF_8);
 
-            URL url = new URL(requestUrlBuilder.toString());
+            URL url = new URL(requestUrlBuilder);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Content-type", "application/json");
@@ -62,7 +62,6 @@ public class JejuAirQualityService {
             // HTTP 응답 코드 확인
             if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
                 log.error("HTTP 오류 코드 : " + conn.getResponseCode());
-                return "HTTP 오류로 실패";
             }
 
             BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -78,7 +77,6 @@ public class JejuAirQualityService {
             // 응답 형식 검증
             if (!response.trim().startsWith("{")) {
                 log.error("예상하지 않은 JSON 형식의 응답입니다. 응답: " + response);
-                return "예상치 않은 응답 형식으로 실패";
             }
 
             JsonNode rootNode = objectMapper.readTree(response);
@@ -89,10 +87,8 @@ public class JejuAirQualityService {
                 jejuAirQualityRepository.save(jejuAirQuality);
             });
 
-            return "성공";
         } catch (IOException e) {
             log.error("대기 질 데이터를 가져오고 저장하는 데 실패했습니다", e);
-            return "실패";
         }
     }
     //--------------------------------------------------------------------------------------------------------------------------------------
