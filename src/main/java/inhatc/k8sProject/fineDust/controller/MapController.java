@@ -24,8 +24,8 @@ public class MapController {
     private final GangwonStationInfoService gangwonStationInfoService;
     private final ChungcheongStationInfoService chungcheongStationInfoService;
     private final GyeongsangStationInfoService gyeongsangStationInfoService;
-    private final JejuStationInfoService jejuStationInfoService;;
-    private final JeollaStationInfoService jeollaStationInfoService;;
+    private final JejuStationInfoService jejuStationInfoService;
+    private final JeollaStationInfoService jeollaStationInfoService;
 
     @GetMapping("/map")
     public ModelAndView map() {

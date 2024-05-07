@@ -104,7 +104,7 @@ public class JeollaAirQualityService {
         // 측정 시간을 파싱하고 KST(Korean Standard Time)로 조정
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         String dateTimeStr = item.path("dataTime").asText(null);
-        LocalDateTime dateTime = null;
+        LocalDateTime dateTime;
         if (dateTimeStr != null) {
             try {
                 dateTime = LocalDateTime.parse(dateTimeStr, formatter);
