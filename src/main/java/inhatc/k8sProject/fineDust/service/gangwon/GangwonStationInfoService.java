@@ -42,7 +42,7 @@ public class GangwonStationInfoService {
     private String serviceKey;
 
 
-    @Scheduled(cron = "0 10 * * * *")
+    @Scheduled(cron = "0 15 * * * *")
     public void updateStationInfoDataAutomatically() {
         String sidoName = "강원"; // 대상 지역 이름
         fetchAndSaveGangwonStationInfo(sidoName); // 해당 지역의 측정소 정보 가져와 저장

@@ -43,7 +43,7 @@ public class GyeongsangStationInfoService {
     private String serviceKey;
 
 
-    @Scheduled(cron = "0 10 * * * *")
+    @Scheduled(cron = "0 15 * * * *")
     public void updateAirQualityDataAutomatically() {
         // 스케줄링된 작업: 일정 간격으로 대기 질 데이터를 업데이트하는 메소드
         List<String> sidoList = Arrays.asList("경북", "경남", "대구", "울산", "부산");

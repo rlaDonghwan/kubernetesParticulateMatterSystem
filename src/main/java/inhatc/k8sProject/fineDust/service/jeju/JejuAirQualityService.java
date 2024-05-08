@@ -36,7 +36,7 @@ public class JejuAirQualityService {
     private String serviceKey;
 
 
-    @Scheduled(cron = "0 10 * * * *")
+    @Scheduled(cron = "0 15 * * * *")
     public void updateAirQualityDataAutomatically() {
         String sidoName = "제주"; // 제주도의 시도명
         fetchAndSaveJejuAirQualityData(sidoName); // 제주도 대기 질 데이터 가져와 저장
@@ -47,14 +47,17 @@ public class JejuAirQualityService {
     @Transactional("jejuTransactionManager")
     public void fetchAndSaveJejuAirQualityData(String sidoName) {
         try {
-            String requestUrlBuilder = "https://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty?" + "sidoName=" + URLEncoder.encode(sidoName, StandardCharsets.UTF_8) +
-                    "&pageNo=" + URLEncoder.encode("1", StandardCharsets.UTF_8) +
-                    "&numOfRows=" + URLEncoder.encode("100", StandardCharsets.UTF_8) +
-                    "&returnType=" + URLEncoder.encode("json", StandardCharsets.UTF_8) +
-                    "&serviceKey=" + serviceKey + // 서비스키는 사용자의 실제 키로 변경해야 합니다.
-                    "&ver=" + URLEncoder.encode("1.0", StandardCharsets.UTF_8);
+            // API 요청을 위한 URL 구성
+            StringBuilder requestUrlBuilder = new StringBuilder("https://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty?");
+            requestUrlBuilder.append("sidoName=").append(URLEncoder.encode(sidoName, StandardCharsets.UTF_8));
+            requestUrlBuilder.append("&pageNo=").append(URLEncoder.encode("1", StandardCharsets.UTF_8));
+            requestUrlBuilder.append("&numOfRows=").append(URLEncoder.encode("200", StandardCharsets.UTF_8));
+            requestUrlBuilder.append("&returnType=").append(URLEncoder.encode("json", StandardCharsets.UTF_8));
+            requestUrlBuilder.append("&serviceKey=").append(serviceKey); // 서비스 키 추가
+            requestUrlBuilder.append("&ver=").append(URLEncoder.encode("1.0", StandardCharsets.UTF_8));
 
-            URL url = new URL(requestUrlBuilder);
+            // URL 객체 생성
+            URL url = new URL(requestUrlBuilder.toString());
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Content-type", "application/json");

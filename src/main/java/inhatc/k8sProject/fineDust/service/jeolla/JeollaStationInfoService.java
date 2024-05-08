@@ -44,7 +44,7 @@ public class JeollaStationInfoService {
     private String serviceKey;
 
 
-    @Scheduled(cron = "0 10 * * * *")
+    @Scheduled(cron = "0 15 * * * *")
     public void updateAirQualityDataAutomatically() {
         // 스케줄링된 작업: 일정 간격으로 대기 질 데이터를 업데이트하는 메소드
         List<String> sidoList = Arrays.asList("전북", "전남", "광주");
@@ -61,7 +61,6 @@ public class JeollaStationInfoService {
                     "&numOfRows=" + URLEncoder.encode("100", StandardCharsets.UTF_8) +
                     "&serviceKey=" + serviceKey +
                     "&returnType=" + URLEncoder.encode("json", StandardCharsets.UTF_8);
-
 
             URL url = new URL(requestUrlBuilder);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
