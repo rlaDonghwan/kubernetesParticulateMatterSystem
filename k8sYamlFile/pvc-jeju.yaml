@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: pvc-gyeongsang
+  name: pvc-jeju
 spec:
   accessModes:
   - ReadWriteOnce
   storageClassName: ebs-sc-gp3
   resources:
     requests:
-      storage: 1.5Gi
+      storage: 1Gi
