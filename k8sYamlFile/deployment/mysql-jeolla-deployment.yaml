@@ -18,7 +18,7 @@ spec:
         env:
         - name: MYSQL_DATABASE
           value: "jeolla"
-        -- name: MYSQL_ROOT_PASSWORD
+        - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
               name: db-secrets

@@ -14,7 +14,8 @@ spec:
     spec:
       containers:
       - name: fine-dust-app
-        image: kdonghwan/k8s_finedust_system:fineDust-0.0.1-SNAPSHOT
+        image: kdonghwan/k8s_finedust_system:latest
+
         ports:
         - containerPort: 8181
         resources:

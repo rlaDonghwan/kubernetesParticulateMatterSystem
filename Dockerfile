@@ -1,30 +1,36 @@
-# Use an official OpenJDK runtime as a parent image
-FROM openjdk:17-jdk-slim
+# 공식 OpenJDK 런타임 이미지를 부모 이미지로 사용합니다.
+FROM --platform=$TARGETPLATFORM openjdk:17-jdk-slim
 
-# Set the working directory
+# 작업 디렉터리를 설정합니다.
 WORKDIR /app
 
-# Copy the build.gradle file and other Gradle files
-COPY build.gradle settings.gradle gradlew ./
+# Gradle 래퍼 및 기타 Gradle 파일을 복사합니다.
+COPY gradlew build.gradle settings.gradle ./
 COPY gradle ./gradle
 
-# Give gradlew execution permission
+# gradlew에 실행 권한을 부여합니다.
 RUN chmod +x gradlew
 
-# Download dependencies
+# 의존성을 다운로드합니다.
 RUN ./gradlew build -x test || return 0
 
-# Copy the rest of the project
+# 프로젝트의 나머지 파일을 복사합니다.
 COPY . .
 
-# Build the application
+# 애플리케이션을 빌드합니다.
 RUN ./gradlew build -x test --no-daemon
 
-# Copy the built jar file into the container
-COPY build/libs/fineDust-0.0.1-SNAPSHOT.jar app.jar
+# 최종 빌드를 위해 더 작은 JRE 이미지를 사용합니다.
+FROM --platform=$TARGETPLATFORM openjdk:17-jdk-slim
 
-# Expose the port your Spring Boot app runs on
+# 작업 디렉터리를 설정합니다.
+WORKDIR /app
+
+# 빌드 단계에서 빌드된 jar 파일을 복사합니다.
+COPY --from=0 /app/build/libs/fineDust-0.0.1-SNAPSHOT.jar app.jar
+
+# Spring Boot 애플리케이션이 실행되는 포트를 엽니다.
 EXPOSE 8181
 
-# Run the jar file
+# jar 파일을 실행합니다.
 ENTRYPOINT ["java", "-jar", "app.jar"]
