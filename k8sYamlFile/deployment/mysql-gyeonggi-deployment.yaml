@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-gyeonggi
+spec:
+  replicas: 1 # 파드의 복제본 수. 이 경우에는 하나의 인스턴스만 실행합니다.
+  selector:
+    matchLabels:
+      app: mysql-gyeonggi # 파드를 선택할 때 사용하는 레이블
+  template:
+    metadata:
+      labels:
+        app: mysql-gyeonggi # 파드에 적용되는 레이블
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:5.7 # 사용할 MySQL Docker 이미지
+        env:
+        - name: MYSQL_DATABASE
+          value: "gyeonggi" # 생성할 데이터베이스 이름
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-secrets
+              key: MYSQL_ROOT_PASSWORD
+        ports:
+        - containerPort: 3306 # MySQL 컨테이너 내부 포트
+        volumeMounts:
+        - name: mysql-storage
+          mountPath: /var/lib/mysql # MySQL 데이터 파일이 저장될 경로
+        - name: mysql-initdb
+          mountPath: /docker-entrypoint-initdb.d # MySQL 초기화 스크립트가 저장될 경로
+        livenessProbe:
+          exec:
+            command:
+            - mysqladmin
+            - ping
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command:
+            - mysqladmin
+            - ping
+          initialDelaySeconds: 30
+          periodSeconds: 10
+      volumes:
+      - name: mysql-storage
+        persistentVolumeClaim:
+          claimName: pvc-gyeonggi # PersistentVolumeClaim을 통해 스토리지 볼륨을 마운트
+      - name: mysql-initdb
+        configMap:
+          name: mysql-initdb-config # 초기화 스크립트를 포함하는 ConfigMap을 마운트
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-gyeonggi
+spec:
+  ports:
+  - port: 3306 # 외부에 노출할 포트
+    targetPort: 3306 # 컨테이너 내부의 MySQL 포트
+  selector:
+    app: mysql-gyeonggi # 이 서비스가 연결할 파드를 선택하는 데 사용되는 레이블
