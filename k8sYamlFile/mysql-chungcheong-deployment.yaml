@@ -29,7 +29,7 @@ spec:
         # MySQL 데이터베이스 이름 설정
         - name: MYSQL_DATABASE
           value: "chungcheong"
-          # Kubernetes Secret에서 MySQL 루트 비밀번호 가져오기
+        # Kubernetes Secret에서 MySQL 루트 비밀번호 가져오기
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -42,7 +42,7 @@ spec:
         # 영구 스토리지 볼륨 마운트
         - name: mysql-storage
           mountPath: /var/lib/mysql
-          # 초기화 스크립트를 위한 ConfigMap 마운트
+        # 초기화 스크립트를 위한 ConfigMap 마운트
         - name: mysql-initdb
           mountPath: /docker-entrypoint-initdb.d
         # Liveness Probe: 컨테이너가 살아 있는지 확인
@@ -61,12 +61,19 @@ spec:
             - ping
           initialDelaySeconds: 30
           periodSeconds: 10
+        resources:
+          requests:
+            memory: "512Mi" # 최소 메모리 요청
+            cpu: "500m" # 최소 CPU 요청
+          limits:
+            memory: "1Gi" # 최대 메모리 제한
+            cpu: "1" # 최대 CPU 제한
       volumes:
       # 영구 스토리지 볼륨 클레임
       - name: mysql-storage
         persistentVolumeClaim:
           claimName: pvc-chungcheong
-          # 초기화 스크립트를 위한 ConfigMap
+      # 초기화 스크립트를 위한 ConfigMap
       - name: mysql-initdb
         configMap:
           name: mysql-initdb-config

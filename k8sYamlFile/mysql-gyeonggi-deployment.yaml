@@ -40,7 +40,7 @@ spec:
         # 영구 스토리지 볼륨 마운트
         - name: mysql-storage
           mountPath: /var/lib/mysql # MySQL 데이터 파일이 저장될 경로
-          # 초기화 스크립트를 위한 ConfigMap 마운트
+        # 초기화 스크립트를 위한 ConfigMap 마운트
         - name: mysql-initdb
           mountPath: /docker-entrypoint-initdb.d # MySQL 초기화 스크립트가 저장될 경로
         # Liveness Probe: 컨테이너가 살아 있는지 확인
@@ -59,12 +59,19 @@ spec:
             - ping
           initialDelaySeconds: 30
           periodSeconds: 10
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1"
       volumes:
       # 영구 스토리지 볼륨 클레임
       - name: mysql-storage
         persistentVolumeClaim:
           claimName: pvc-gyeonggi # PersistentVolumeClaim을 통해 스토리지 볼륨을 마운트
-          # 초기화 스크립트를 위한 ConfigMap
+      # 초기화 스크립트를 위한 ConfigMap
       - name: mysql-initdb
         configMap:
           name: mysql-initdb-config # 초기화 스크립트를 포함하는 ConfigMap을 마운트
@@ -77,6 +84,4 @@ spec:
   ports:
   # 외부에 노출할 포트
   - port: 3306
-    targetPort: 3306 # 컨테이너 내부의 MySQL 포트
-  selector:
-    app: mysql-gyeonggi # 이 서비스가 연결할 파드를 선택하는 데 사용되는 레이블
+    targetPort: 3306 # 컨테이너
