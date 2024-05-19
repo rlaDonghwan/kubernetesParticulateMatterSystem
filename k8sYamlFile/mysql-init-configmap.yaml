@@ -10,3 +10,6 @@ data:
     CREATE DATABASE IF NOT EXISTS gyeongsang;
     CREATE DATABASE IF NOT EXISTS jeolla;
     CREATE DATABASE IF NOT EXISTS jeju;
+  initdb.sh: |
+    #!/bin/bash
+    rm -rf /var/lib/mysql/*

@@ -12,24 +12,38 @@ spec:
       labels:
         app: mysql-gyeonggi # 파드에 적용되는 레이블
     spec:
+      # initContainers: 메인 컨테이너가 시작되기 전에 MySQL 데이터 디렉토리를 초기화하는 초기화 컨테이너
+      initContainers:
+      - name: init-mysql
+        image: busybox
+        command: ['sh', '-c', 'rm -rf /var/lib/mysql/*']
+        volumeMounts:
+        - name: mysql-storage
+          mountPath: /var/lib/mysql
+
       containers:
       - name: mysql
         image: mysql:5.7 # 사용할 MySQL Docker 이미지
         env:
+        # MySQL 환경 변수 설정
         - name: MYSQL_DATABASE
           value: "gyeonggi" # 생성할 데이터베이스 이름
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
               name: db-secrets
-              key: MYSQL_ROOT_PASSWORD
+              key: MYSQL_ROOT_PASSWORD # Kubernetes Secret에서 MySQL 루트 비밀번호 가져오기
         ports:
-        - containerPort: 3306 # MySQL 컨테이너 내부 포트
+        # MySQL 컨테이너 내부 포트
+        - containerPort: 3306
         volumeMounts:
+        # 영구 스토리지 볼륨 마운트
         - name: mysql-storage
           mountPath: /var/lib/mysql # MySQL 데이터 파일이 저장될 경로
+          # 초기화 스크립트를 위한 ConfigMap 마운트
         - name: mysql-initdb
           mountPath: /docker-entrypoint-initdb.d # MySQL 초기화 스크립트가 저장될 경로
+        # Liveness Probe: 컨테이너가 살아 있는지 확인
         livenessProbe:
           exec:
             command:
@@ -37,6 +51,7 @@ spec:
             - ping
           initialDelaySeconds: 30
           periodSeconds: 10
+        # Readiness Probe: 컨테이너가 준비되었는지 확인
         readinessProbe:
           exec:
             command:
@@ -45,9 +60,11 @@ spec:
           initialDelaySeconds: 30
           periodSeconds: 10
       volumes:
+      # 영구 스토리지 볼륨 클레임
       - name: mysql-storage
         persistentVolumeClaim:
           claimName: pvc-gyeonggi # PersistentVolumeClaim을 통해 스토리지 볼륨을 마운트
+          # 초기화 스크립트를 위한 ConfigMap
       - name: mysql-initdb
         configMap:
           name: mysql-initdb-config # 초기화 스크립트를 포함하는 ConfigMap을 마운트
@@ -58,7 +75,8 @@ metadata:
   name: mysql-gyeonggi
 spec:
   ports:
-  - port: 3306 # 외부에 노출할 포트
+  # 외부에 노출할 포트
+  - port: 3306
     targetPort: 3306 # 컨테이너 내부의 MySQL 포트
   selector:
     app: mysql-gyeonggi # 이 서비스가 연결할 파드를 선택하는 데 사용되는 레이블
