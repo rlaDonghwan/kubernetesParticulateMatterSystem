@@ -1,10 +1,12 @@
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: ebs-sc
+  name: ebs-sc-gp3
 provisioner: ebs.csi.aws.com
 parameters:
-  type: gp2
+  type: gp3
   fsType: ext4
+  iops: "3000" # 기본 IOPS 설정
+  throughput: "125" # 기본 처리량 설정 (MB/s)
 reclaimPolicy: Retain
 volumeBindingMode: WaitForFirstConsumer
