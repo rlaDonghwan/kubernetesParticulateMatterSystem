@@ -16,7 +16,7 @@ spec:
       initContainers:
       - name: init-mysql
         image: busybox
-        command: ['sh', '-c', 'rm -rf /var/lib/mysql/*']
+        command: ['sh', '-c', 'rm -rf /var/lib/mysql/*'] # MySQL 데이터 디렉토리 초기화 명령어
         volumeMounts:
         - name: mysql-storage
           mountPath: /var/lib/mysql
@@ -89,3 +89,7 @@ spec:
     targetPort: 3306
   selector:
     app: mysql-chungcheong
+
+
+
+---

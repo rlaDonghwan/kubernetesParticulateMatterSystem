@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql-jeolla # Deployment의 이름 설정
+  name: mysql-jeolla
 spec:
-  replicas: 1 # 파드의 복제본 수. 이 경우에는 하나의 인스턴스만 실행합니다.
+  replicas: 1
   selector:
     matchLabels:
-      app: mysql-jeolla # 파드를 선택할 때 사용하는 레이블
+      app: mysql-jeolla
   template:
     metadata:
       labels:
-        app: mysql-jeolla # 파드에 적용되는 레이블
+        app: mysql-jeolla
     spec:
       # initContainers: 메인 컨테이너가 시작되기 전에 MySQL 데이터 디렉토리를 초기화하는 초기화 컨테이너
       initContainers:
@@ -19,29 +19,32 @@ spec:
         command: ['sh', '-c', 'rm -rf /var/lib/mysql/*'] # MySQL 데이터 디렉토리 초기화 명령어
         volumeMounts:
         - name: mysql-storage
-          mountPath: /var/lib/mysql # MySQL 데이터 디렉토리를 마운트
+          mountPath: /var/lib/mysql
+
+      # 메인 MySQL 컨테이너 설정
       containers:
       - name: mysql
-        image: mysql:5.7 # 사용할 MySQL Docker 이미지
+        image: mysql:5.7
         env:
-        # MySQL 환경 변수 설정
+        # MySQL 데이터베이스 이름 설정
         - name: MYSQL_DATABASE
-          value: "jeolla" # 생성할 데이터베이스 이름
+          value: "jeolla"
+        # Kubernetes Secret에서 MySQL 루트 비밀번호 가져오기
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
               name: db-secrets
-              key: MYSQL_ROOT_PASSWORD # Kubernetes Secret에서 MySQL 루트 비밀번호 가져오기
+              key: MYSQL_ROOT_PASSWORD
         ports:
-        # MySQL 컨테이너 내부 포트
+        # MySQL 컨테이너 포트 설정
         - containerPort: 3306
         volumeMounts:
         # 영구 스토리지 볼륨 마운트
         - name: mysql-storage
-          mountPath: /var/lib/mysql # MySQL 데이터 파일이 저장될 경로
+          mountPath: /var/lib/mysql
         # 초기화 스크립트를 위한 ConfigMap 마운트
         - name: mysql-initdb
-          mountPath: /docker-entrypoint-initdb.d # MySQL 초기화 스크립트가 저장될 경로
+          mountPath: /docker-entrypoint-initdb.d
         # Liveness Probe: 컨테이너가 살아 있는지 확인
         livenessProbe:
           exec:
@@ -60,29 +63,29 @@ spec:
           periodSeconds: 10
         resources:
           requests:
-            memory: "512Mi"
-            cpu: "500m"
+            memory: "512Mi" # 최소 메모리 요청
+            cpu: "500m" # 최소 CPU 요청
           limits:
-            memory: "1Gi"
-            cpu: "1"
+            memory: "1Gi" # 최대 메모리 제한
+            cpu: "1" # 최대 CPU 제한
       volumes:
       # 영구 스토리지 볼륨 클레임
       - name: mysql-storage
         persistentVolumeClaim:
-          claimName: pvc-jeolla # PersistentVolumeClaim을 통해 스토리지 볼륨을 마운트
+          claimName: pvc-jeolla
       # 초기화 스크립트를 위한 ConfigMap
       - name: mysql-initdb
         configMap:
-          name: mysql-initdb-config # 초기화 스크립트를 포함하는 ConfigMap을 마운트
+          name: mysql-initdb-config
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: mysql-jeolla # 서비스의 이름 설정
+  name: mysql-jeolla
 spec:
   ports:
-  # 외부에 노출할 포트
+  # MySQL 서비스 포트 설정
   - port: 3310
-    targetPort: 3306 # 컨테이너 내부의 MySQL 포트
+    targetPort: 3306
   selector:
-    app: mysql-jeolla # 이 서비스가 연결할 파드를 선택하는 데 사용되는 레이블
+    app: mysql-jeolla

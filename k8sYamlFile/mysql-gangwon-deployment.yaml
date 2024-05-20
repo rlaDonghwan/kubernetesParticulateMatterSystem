@@ -16,7 +16,7 @@ spec:
       initContainers:
       - name: init-mysql
         image: busybox
-        command: ['sh', '-c', 'rm -rf /var/lib/mysql/*']
+        command: ['sh', '-c', 'rm -rf /var/lib/mysql/*'] # MySQL 데이터 디렉토리 초기화 명령어
         volumeMounts:
         - name: mysql-storage
           mountPath: /var/lib/mysql
@@ -63,11 +63,11 @@ spec:
           periodSeconds: 10
         resources:
           requests:
-            memory: "512Mi"
-            cpu: "500m"
+            memory: "512Mi" # 최소 메모리 요청
+            cpu: "500m" # 최소 CPU 요청
           limits:
-            memory: "1Gi"
-            cpu: "1"
+            memory: "1Gi" # 최대 메모리 제한
+            cpu: "1" # 최대 CPU 제한
       volumes:
       # 영구 스토리지 볼륨 클레임
       - name: mysql-storage
@@ -89,3 +89,4 @@ spec:
     targetPort: 3306
   selector:
     app: mysql-gangwon
+---
