@@ -8,6 +8,7 @@ spec:
   resources:
     requests:
       storage: 1Gi
+  storageClassName: mysql-storage-class
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -19,6 +20,7 @@ spec:
   resources:
     requests:
       storage: 1Gi
+  storageClassName: mysql-storage-class
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -30,6 +32,7 @@ spec:
   resources:
     requests:
       storage: 1Gi
+  storageClassName: mysql-storage-class
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -41,6 +44,7 @@ spec:
   resources:
     requests:
       storage: 1Gi
+  storageClassName: mysql-storage-class
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -52,6 +56,7 @@ spec:
   resources:
     requests:
       storage: 1Gi
+  storageClassName: mysql-storage-class
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -63,3 +68,4 @@ spec:
   resources:
     requests:
       storage: 1Gi
+  storageClassName: mysql-storage-class
