@@ -1,3 +1,5 @@
+
+# MySQL Gyeonggi Deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -34,6 +36,7 @@ spec:
             claimName: mysql-gyeonggi-pvc
 
 ---
+# MySQL Gangwon Deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -70,6 +73,7 @@ spec:
             claimName: mysql-gangwon-pvc
 
 ---
+# MySQL Chungcheong Deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -106,6 +110,7 @@ spec:
             claimName: mysql-chungcheong-pvc
 
 ---
+# MySQL Gyeongsang Deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -142,6 +147,7 @@ spec:
             claimName: mysql-gyeongsang-pvc
 
 ---
+# MySQL Jeolla Deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -178,6 +184,7 @@ spec:
             claimName: mysql-jeolla-pvc
 
 ---
+# MySQL Jeju Deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
