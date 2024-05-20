@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql-deployment
+  name: mysql-gyeonggi
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mysql
+      app: mysql-gyeonggi
   template:
     metadata:
       labels:
-        app: mysql
+        app: mysql-gyeonggi
     spec:
       containers:
         - name: mysql-gyeonggi
@@ -28,6 +28,27 @@ spec:
           volumeMounts:
             - name: mysql-gyeonggi-storage
               mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-gyeonggi-storage
+          persistentVolumeClaim:
+            claimName: mysql-gyeonggi-pvc
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-gangwon
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql-gangwon
+  template:
+    metadata:
+      labels:
+        app: mysql-gangwon
+    spec:
+      containers:
         - name: mysql-gangwon
           image: mysql:5.7
           ports:
@@ -43,6 +64,27 @@ spec:
           volumeMounts:
             - name: mysql-gangwon-storage
               mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-gangwon-storage
+          persistentVolumeClaim:
+            claimName: mysql-gangwon-pvc
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-chungcheong
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql-chungcheong
+  template:
+    metadata:
+      labels:
+        app: mysql-chungcheong
+    spec:
+      containers:
         - name: mysql-chungcheong
           image: mysql:5.7
           ports:
@@ -58,6 +100,27 @@ spec:
           volumeMounts:
             - name: mysql-chungcheong-storage
               mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-chungcheong-storage
+          persistentVolumeClaim:
+            claimName: mysql-chungcheong-pvc
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-gyeongsang
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql-gyeongsang
+  template:
+    metadata:
+      labels:
+        app: mysql-gyeongsang
+    spec:
+      containers:
         - name: mysql-gyeongsang
           image: mysql:5.7
           ports:
@@ -73,6 +136,27 @@ spec:
           volumeMounts:
             - name: mysql-gyeongsang-storage
               mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-gyeongsang-storage
+          persistentVolumeClaim:
+            claimName: mysql-gyeongsang-pvc
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-jeolla
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql-jeolla
+  template:
+    metadata:
+      labels:
+        app: mysql-jeolla
+    spec:
+      containers:
         - name: mysql-jeolla
           image: mysql:5.7
           ports:
@@ -88,6 +172,27 @@ spec:
           volumeMounts:
             - name: mysql-jeolla-storage
               mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-jeolla-storage
+          persistentVolumeClaim:
+            claimName: mysql-jeolla-pvc
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-jeju
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql-jeju
+  template:
+    metadata:
+      labels:
+        app: mysql-jeju
+    spec:
+      containers:
         - name: mysql-jeju
           image: mysql:5.7
           ports:
@@ -104,21 +209,6 @@ spec:
             - name: mysql-jeju-storage
               mountPath: /var/lib/mysql
       volumes:
-        - name: mysql-gyeonggi-storage
-          persistentVolumeClaim:
-            claimName: mysql-gyeonggi-pvc
-        - name: mysql-gangwon-storage
-          persistentVolumeClaim:
-            claimName: mysql-gangwon-pvc
-        - name: mysql-chungcheong-storage
-          persistentVolumeClaim:
-            claimName: mysql-chungcheong-pvc
-        - name: mysql-gyeongsang-storage
-          persistentVolumeClaim:
-            claimName: mysql-gyeongsang-pvc
-        - name: mysql-jeolla-storage
-          persistentVolumeClaim:
-            claimName: mysql-jeolla-pvc
         - name: mysql-jeju-storage
           persistentVolumeClaim:
             claimName: mysql-jeju-pvc
