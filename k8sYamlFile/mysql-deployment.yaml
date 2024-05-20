@@ -12,45 +12,52 @@ spec:
       labels:
         app: mysql-gyeonggi # 파드에 적용되는 레이블
     spec:
+      initContainers:
+        - name: init-mysql
+          image: busybox
+          command: ['sh', '-c', 'rm -rf /var/lib/mysql/*']
+          volumeMounts:
+            - name: mysql-storage
+              mountPath: /var/lib/mysql
       containers:
-      - name: mysql
-        image: mysql:5.7 # 사용할 MySQL Docker 이미지
-        env:
-        - name: MYSQL_DATABASE
-          value: "gyeonggi" # 생성할 데이터베이스 이름
-        - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: db-secrets
-              key: MYSQL_ROOT_PASSWORD
-        ports:
-        - containerPort: 3306 # MySQL 컨테이너 내부 포트
-        volumeMounts:
-        - name: mysql-storage
-          mountPath: /var/lib/mysql # MySQL 데이터 파일이 저장될 경로
-        - name: mysql-initdb
-          mountPath: /docker-entrypoint-initdb.d # MySQL 초기화 스크립트가 저장될 경로
-        livenessProbe:
-          exec:
-            command:
-            - mysqladmin
-            - ping
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          exec:
-            command:
-            - mysqladmin
-            - ping
-          initialDelaySeconds: 30
-          periodSeconds: 10
+        - name: mysql
+          image: mysql:5.7 # 사용할 MySQL Docker 이미지
+          env:
+            - name: MYSQL_DATABASE
+              value: "gyeonggi" # 생성할 데이터베이스 이름
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: MYSQL_ROOT_PASSWORD
+          ports:
+            - containerPort: 3306 # MySQL 컨테이너 내부 포트
+          volumeMounts:
+            - name: mysql-storage
+              mountPath: /var/lib/mysql # MySQL 데이터 파일이 저장될 경로
+            - name: mysql-initdb
+              mountPath: /docker-entrypoint-initdb.d # MySQL 초기화 스크립트가 저장될 경로
+          livenessProbe:
+            exec:
+              command:
+                - mysqladmin
+                - ping
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - mysqladmin
+                - ping
+            initialDelaySeconds: 30
+            periodSeconds: 10
       volumes:
-      - name: mysql-storage
-        persistentVolumeClaim:
-          claimName: pvc-gyeonggi # PersistentVolumeClaim을 통해 스토리지 볼륨을 마운트
-      - name: mysql-initdb
-        configMap:
-          name: mysql-initdb-config # 초기화 스크립트를 포함하는 ConfigMap을 마운트
+        - name: mysql-storage
+          persistentVolumeClaim:
+            claimName: pvc-gyeonggi # PersistentVolumeClaim을 통해 스토리지 볼륨을 마운트
+        - name: mysql-initdb
+          configMap:
+            name: mysql-initdb-config # 초기화 스크립트를 포함하는 ConfigMap을 마운트
 ---
 apiVersion: v1
 kind: Service
@@ -58,8 +65,8 @@ metadata:
   name: mysql-gyeonggi
 spec:
   ports:
-  - port: 3306 # 외부에 노출할 포트
-    targetPort: 3306 # 컨테이너 내부의 MySQL 포트
+    - port: 3306 # 외부에 노출할 포트
+      targetPort: 3306 # 컨테이너 내부의 MySQL 포트
   selector:
     app: mysql-gyeonggi # 이 서비스가 연결할 파드를 선택하는 데 사용되는 레이블
 ---
@@ -77,45 +84,52 @@ spec:
       labels:
         app: mysql-gangwon
     spec:
+      initContainers:
+        - name: init-mysql
+          image: busybox
+          command: ['sh', '-c', 'rm -rf /var/lib/mysql/*']
+          volumeMounts:
+            - name: mysql-storage
+              mountPath: /var/lib/mysql
       containers:
-      - name: mysql
-        image: mysql:5.7
-        env:
-        - name: MYSQL_DATABASE
-          value: "gangwon"
-        - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: db-secrets
-              key: MYSQL_ROOT_PASSWORD
-        ports:
-        - containerPort: 3306
-        volumeMounts:
-        - name: mysql-storage
-          mountPath: /var/lib/mysql
-        - name: mysql-initdb
-          mountPath: /docker-entrypoint-initdb.d
-        livenessProbe:
-          exec:
-            command:
-            - mysqladmin
-            - ping
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          exec:
-            command:
-            - mysqladmin
-            - ping
-          initialDelaySeconds: 30
-          periodSeconds: 10
+        - name: mysql
+          image: mysql:5.7
+          env:
+            - name: MYSQL_DATABASE
+              value: "gangwon"
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: MYSQL_ROOT_PASSWORD
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - name: mysql-storage
+              mountPath: /var/lib/mysql
+            - name: mysql-initdb
+              mountPath: /docker-entrypoint-initdb.d
+          livenessProbe:
+            exec:
+              command:
+                - mysqladmin
+                - ping
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - mysqladmin
+                - ping
+            initialDelaySeconds: 30
+            periodSeconds: 10
       volumes:
-      - name: mysql-storage
-        persistentVolumeClaim:
-          claimName: pvc-gangwon
-      - name: mysql-initdb
-        configMap:
-          name: mysql-initdb-config
+        - name: mysql-storage
+          persistentVolumeClaim:
+            claimName: pvc-gangwon
+        - name: mysql-initdb
+          configMap:
+            name: mysql-initdb-config
 ---
 apiVersion: v1
 kind: Service
@@ -123,8 +137,8 @@ metadata:
   name: mysql-gangwon
 spec:
   ports:
-  - port: 3307
-    targetPort: 3306
+    - port: 3307
+      targetPort: 3306
   selector:
     app: mysql-gangwon
 ---
@@ -142,44 +156,51 @@ spec:
       labels:
         app: mysql-chungcheong
     spec:
+      initContainers:
+        - name: init-mysql
+          image: busybox
+          command: ['sh', '-c', 'rm -rf /var/lib/mysql/*']
+          volumeMounts:
+            - name: mysql-storage
+              mountPath: /var/lib/mysql
       containers:
-      - name: mysql
-        image: mysql:5.7
-        env:
-        - name: MYSQL_DATABASE
-          value: "chungcheong"
-        - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: db-secrets
-              key: MYSQL_ROOT_PASSWORD
-        ports:
-        - containerPort: 3306
-        volumeMounts:
-        - name: mysql-storage
-          mountPath: /var/lib/mysql
-        - name: mysql-initdb
-          mountPath: /docker-entrypoint-initdb.d
-        livenessProbe:
-          exec:
-            command:
-            - mysqladmin - ping
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          exec:
-            command:
-            - mysqladmin
-            - ping
-          initialDelaySeconds: 30
-          periodSeconds: 10
+        - name: mysql
+          image: mysql:5.7
+          env:
+            - name: MYSQL_DATABASE
+              value: "chungcheong"
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: MYSQL_ROOT_PASSWORD
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - name: mysql-storage
+              mountPath: /var/lib/mysql
+            - name: mysql-initdb
+              mountPath: /docker-entrypoint-initdb.d
+          livenessProbe:
+            exec:
+              command:
+                - mysqladmin - ping
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - mysqladmin
+                - ping
+            initialDelaySeconds: 30
+            periodSeconds: 10
       volumes:
-      - name: mysql-storage
-        persistentVolumeClaim:
-          claimName: pvc-chungcheong
-      - name: mysql-initdb
-        configMap:
-          name: mysql-initdb-config
+        - name: mysql-storage
+          persistentVolumeClaim:
+            claimName: pvc-chungcheong
+        - name: mysql-initdb
+          configMap:
+            name: mysql-initdb-config
 ---
 apiVersion: v1
 kind: Service
@@ -187,8 +208,8 @@ metadata:
   name: mysql-chungcheong
 spec:
   ports:
-  - port: 3308
-    targetPort: 3306
+    - port: 3308
+      targetPort: 3306
   selector:
     app: mysql-chungcheong
 ---
@@ -206,45 +227,52 @@ spec:
       labels:
         app: mysql-gyeongsang
     spec:
+      initContainers:
+        - name: init-mysql
+          image: busybox
+          command: ['sh', '-c', 'rm -rf /var/lib/mysql/*']
+          volumeMounts:
+            - name: mysql-storage
+              mountPath: /var/lib/mysql
       containers:
-      - name: mysql
-        image: mysql:5.7
-        env:
-        - name: MYSQL_DATABASE
-          value: "gyeongsang"
-        - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: db-secrets
-              key: MYSQL_ROOT_PASSWORD
-        ports:
-        - containerPort: 3306
-        volumeMounts:
-        - name: mysql-storage
-          mountPath: /var/lib/mysql
-        - name: mysql-initdb
-          mountPath: /docker-entrypoint-initdb.d
-        livenessProbe:
-          exec:
-            command:
-            - mysqladmin
-            - ping
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          exec:
-            command:
-            - mysqladmin
-            - ping
-          initialDelaySeconds: 30
-          periodSeconds: 10
+        - name: mysql
+          image: mysql:5.7
+          env:
+            - name: MYSQL_DATABASE
+              value: "gyeongsang"
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: MYSQL_ROOT_PASSWORD
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - name: mysql-storage
+              mountPath: /var/lib/mysql
+            - name: mysql-initdb
+              mountPath: /docker-entrypoint-initdb.d
+          livenessProbe:
+            exec:
+              command:
+                - mysqladmin
+                - ping
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - mysqladmin
+                - ping
+            initialDelaySeconds: 30
+            periodSeconds: 10
       volumes:
-      - name: mysql-storage
-        persistentVolumeClaim:
-          claimName: pvc-gyeongsang
-      - name: mysql-initdb
-        configMap:
-          name: mysql-initdb-config
+        - name: mysql-storage
+          persistentVolumeClaim:
+            claimName: pvc-gyeongsang
+        - name: mysql-initdb
+          configMap:
+            name: mysql-initdb-config
 ---
 apiVersion: v1
 kind: Service
@@ -252,8 +280,8 @@ metadata:
   name: mysql-gyeongsang
 spec:
   ports:
-  - port: 3309
-    targetPort: 3306
+    - port: 3309
+      targetPort: 3306
   selector:
     app: mysql-gyeongsang
 ---
@@ -271,45 +299,52 @@ spec:
       labels:
         app: mysql-jeju
     spec:
+      initContainers:
+        - name: init-mysql
+          image: busybox
+          command: ['sh', '-c', 'rm -rf /var/lib/mysql/*']
+          volumeMounts:
+            - name: mysql-storage
+              mountPath: /var/lib/mysql
       containers:
-      - name: mysql
-        image: mysql:5.7
-        env:
-        - name: MYSQL_DATABASE
-          value: "jeju"
-        - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: db-secrets
-              key: MYSQL_ROOT_PASSWORD
-        ports:
-        - containerPort: 3306
-        volumeMounts:
-        - name: mysql-storage
-          mountPath: /var/lib/mysql
-        - name: mysql-initdb
-          mountPath: /docker-entrypoint-initdb.d
-        livenessProbe:
-          exec:
-            command:
-            - mysqladmin
-            - ping
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          exec:
-            command:
-            - mysqladmin
-            - ping
-          initialDelaySeconds: 30
-          periodSeconds: 10
+        - name: mysql
+          image: mysql:5.7
+          env:
+            - name: MYSQL_DATABASE
+              value: "jeju"
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: MYSQL_ROOT_PASSWORD
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - name: mysql-storage
+              mountPath: /var/lib/mysql
+            - name: mysql-initdb
+              mountPath: /docker-entrypoint-initdb.d
+          livenessProbe:
+            exec:
+              command:
+                - mysqladmin
+                - ping
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - mysqladmin
+                - ping
+            initialDelaySeconds: 30
+            periodSeconds: 10
       volumes:
-      - name: mysql-storage
-        persistentVolumeClaim:
-          claimName: pvc-jeju
-      - name: mysql-initdb
-        configMap:
-          name: mysql-initdb-config
+        - name: mysql-storage
+          persistentVolumeClaim:
+            claimName: pvc-jeju
+        - name: mysql-initdb
+          configMap:
+            name: mysql-initdb-config
 ---
 apiVersion: v1
 kind: Service
@@ -317,8 +352,8 @@ metadata:
   name: mysql-jeju
 spec:
   ports:
-  - port: 3311
-    targetPort: 3306
+    - port: 3311
+      targetPort: 3306
   selector:
     app: mysql-jeju
 ---
@@ -336,45 +371,52 @@ spec:
       labels:
         app: mysql-jeolla
     spec:
+      initContainers:
+        - name: init-mysql
+          image: busybox
+          command: ['sh', '-c', 'rm -rf /var/lib/mysql/*']
+          volumeMounts:
+            - name: mysql-storage
+              mountPath: /var/lib/mysql
       containers:
-      - name: mysql
-        image: mysql:5.7
-        env:
-        - name: MYSQL_DATABASE
-          value: "jeolla"
-        - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: db-secrets
-              key: MYSQL_ROOT_PASSWORD
-        ports:
-        - containerPort: 3306
-        volumeMounts:
-        - name: mysql-storage
-          mountPath: /var/lib/mysql
-        - name: mysql-initdb
-          mountPath: /docker-entrypoint-initdb.d
-        livenessProbe:
-          exec:
-            command:
-            - mysqladmin
-            - ping
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          exec:
-            command:
-            - mysqladmin
-            - ping
-          initialDelaySeconds: 30
-          periodSeconds: 10
+        - name: mysql
+          image: mysql:5.7
+          env:
+            - name: MYSQL_DATABASE
+              value: "jeolla"
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: MYSQL_ROOT_PASSWORD
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - name: mysql-storage
+              mountPath: /var/lib/mysql
+            - name: mysql-initdb
+              mountPath: /docker-entrypoint-initdb.d
+          livenessProbe:
+            exec:
+              command:
+                - mysqladmin
+                - ping
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - mysqladmin
+                - ping
+            initialDelaySeconds: 30
+            periodSeconds: 10
       volumes:
-      - name: mysql-storage
-        persistentVolumeClaim:
-          claimName: pvc-jeolla
-      - name: mysql-initdb
-        configMap:
-          name: mysql-initdb-config
+        - name: mysql-storage
+          persistentVolumeClaim:
+            claimName: pvc-jeolla
+        - name: mysql-initdb
+          configMap:
+            name: mysql-initdb-config
 ---
 apiVersion: v1
 kind: Service
@@ -382,7 +424,7 @@ metadata:
   name: mysql-jeolla
 spec:
   ports:
-  - port: 3310
-    targetPort: 3306
+    - port: 3310
+      targetPort: 3306
   selector:
     app: mysql-jeolla
