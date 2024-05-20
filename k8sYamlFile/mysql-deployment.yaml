@@ -13,7 +13,7 @@ spec:
         app: mysql-gyeonggi
     spec:
       containers:
-        - name: mysql-gyeonggi
+        - name: mysql
           image: mysql:5.7
           ports:
             - containerPort: 3306
@@ -21,18 +21,17 @@ spec:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: db-secrets
+                  name: secret-mysql
                   key: MYSQL_ROOT_PASSWORD
             - name: MYSQL_DATABASE
               value: "gyeonggi"
           volumeMounts:
-            - name: mysql-gyeonggi-storage
+            - name: mysql-storage
               mountPath: /var/lib/mysql
       volumes:
-        - name: mysql-gyeonggi-storage
+        - name: mysql-storage
           persistentVolumeClaim:
             claimName: mysql-gyeonggi-pvc
-
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -49,7 +48,7 @@ spec:
         app: mysql-gangwon
     spec:
       containers:
-        - name: mysql-gangwon
+        - name: mysql
           image: mysql:5.7
           ports:
             - containerPort: 3307
@@ -57,18 +56,17 @@ spec:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: db-secrets
+                  name: secret-mysql
                   key: MYSQL_ROOT_PASSWORD
             - name: MYSQL_DATABASE
               value: "gangwon"
           volumeMounts:
-            - name: mysql-gangwon-storage
+            - name: mysql-storage
               mountPath: /var/lib/mysql
       volumes:
-        - name: mysql-gangwon-storage
+        - name: mysql-storage
           persistentVolumeClaim:
             claimName: mysql-gangwon-pvc
-
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -85,7 +83,7 @@ spec:
         app: mysql-chungcheong
     spec:
       containers:
-        - name: mysql-chungcheong
+        - name: mysql
           image: mysql:5.7
           ports:
             - containerPort: 3308
@@ -93,18 +91,17 @@ spec:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: db-secrets
+                  name: secret-mysql
                   key: MYSQL_ROOT_PASSWORD
             - name: MYSQL_DATABASE
               value: "chungcheong"
           volumeMounts:
-            - name: mysql-chungcheong-storage
+            - name: mysql-storage
               mountPath: /var/lib/mysql
       volumes:
-        - name: mysql-chungcheong-storage
+        - name: mysql-storage
           persistentVolumeClaim:
             claimName: mysql-chungcheong-pvc
-
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -121,7 +118,7 @@ spec:
         app: mysql-gyeongsang
     spec:
       containers:
-        - name: mysql-gyeongsang
+        - name: mysql
           image: mysql:5.7
           ports:
             - containerPort: 3309
@@ -129,18 +126,17 @@ spec:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: db-secrets
+                  name: secret-mysql
                   key: MYSQL_ROOT_PASSWORD
             - name: MYSQL_DATABASE
               value: "gyeongsang"
           volumeMounts:
-            - name: mysql-gyeongsang-storage
+            - name: mysql-storage
               mountPath: /var/lib/mysql
       volumes:
-        - name: mysql-gyeongsang-storage
+        - name: mysql-storage
           persistentVolumeClaim:
             claimName: mysql-gyeongsang-pvc
-
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -157,7 +153,7 @@ spec:
         app: mysql-jeolla
     spec:
       containers:
-        - name: mysql-jeolla
+        - name: mysql
           image: mysql:5.7
           ports:
             - containerPort: 3310
@@ -165,18 +161,17 @@ spec:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: db-secrets
+                  name: secret-mysql
                   key: MYSQL_ROOT_PASSWORD
             - name: MYSQL_DATABASE
               value: "jeolla"
           volumeMounts:
-            - name: mysql-jeolla-storage
+            - name: mysql-storage
               mountPath: /var/lib/mysql
       volumes:
-        - name: mysql-jeolla-storage
+        - name: mysql-storage
           persistentVolumeClaim:
             claimName: mysql-jeolla-pvc
-
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -193,7 +188,7 @@ spec:
         app: mysql-jeju
     spec:
       containers:
-        - name: mysql-jeju
+        - name: mysql
           image: mysql:5.7
           ports:
             - containerPort: 3311
@@ -201,14 +196,14 @@ spec:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: db-secrets
+                  name: secret-mysql
                   key: MYSQL_ROOT_PASSWORD
             - name: MYSQL_DATABASE
               value: "jeju"
           volumeMounts:
-            - name: mysql-jeju-storage
+            - name: mysql-storage
               mountPath: /var/lib/mysql
       volumes:
-        - name: mysql-jeju-storage
+        - name: mysql-storage
           persistentVolumeClaim:
             claimName: mysql-jeju-pvc

@@ -6,7 +6,7 @@ provisioner: kubernetes.io/aws-ebs
 parameters:
   type: gp3
   fsType: ext4
-  iops: "3000" # 기본 IOPS 설정
-  throughput: "125" # 기본 처리량 설정 (MB/s)
+  iops: "3000"
+  throughput: "125"
 reclaimPolicy: Retain
 volumeBindingMode: WaitForFirstConsumer
