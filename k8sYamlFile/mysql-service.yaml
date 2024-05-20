@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-gyeonggi
+spec:
+  ports:
+    - port: 3306
+  selector:
+    app: mysql-gyeonggi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-gangwon
+spec:
+  ports:
+    - port: 3307
+  selector:
+    app: mysql-gangwon
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-chungcheong
+spec:
+  ports:
+    - port: 3308
+  selector:
+    app: mysql-chungcheong
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-gyeongsang
+spec:
+  ports:
+    - port: 3309
+  selector:
+    app: mysql-gyeongsang
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-jeolla
+spec:
+  ports:
+    - port: 3310
+  selector:
+    app: mysql-jeolla
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-jeju
+spec:
+  ports:
+    - port: 3311
+  selector:
+    app: mysql-jeju
