@@ -12,11 +12,16 @@ spec:
       labels:
         app: mysql-gyeonggi
     spec:
+      initContainers:
+        - name: init-mysql
+          image: busybox
+          command: ['sh', '-c', 'rm -rf /var/lib/mysql/*']
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql
       containers:
         - name: mysql-gyeonggi
           image: mysql:5.7
-          ports:
-            - containerPort: 3306
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
@@ -26,13 +31,17 @@ spec:
             - name: MYSQL_DATABASE
               value: "gyeonggi"
           volumeMounts:
-            - name: mysql-gyeonggi-storage
+            - name: mysql-data
               mountPath: /var/lib/mysql
+            - name: config-volume
+              mountPath: /etc/mysql/conf.d
       volumes:
-        - name: mysql-gyeonggi-storage
+        - name: mysql-data
           persistentVolumeClaim:
             claimName: mysql-gyeonggi-pvc
-
+        - name: config-volume
+          configMap:
+            name: mysql-config
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -48,11 +57,16 @@ spec:
       labels:
         app: mysql-gangwon
     spec:
+      initContainers:
+        - name: init-mysql
+          image: busybox
+          command: ['sh', '-c', 'rm -rf /var/lib/mysql/*']
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql
       containers:
         - name: mysql-gangwon
           image: mysql:5.7
-          ports:
-            - containerPort: 3307
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
@@ -62,14 +76,20 @@ spec:
             - name: MYSQL_DATABASE
               value: "gangwon"
           volumeMounts:
-            - name: mysql-gangwon-storage
+            - name: mysql-data
               mountPath: /var/lib/mysql
+            - name: config-volume
+              mountPath: /etc/mysql/conf.d
       volumes:
-        - name: mysql-gangwon-storage
+        - name: mysql-data
           persistentVolumeClaim:
             claimName: mysql-gangwon-pvc
+        - name: config-volume
+          configMap:
+            name: mysql-config
 
 ---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -84,11 +104,16 @@ spec:
       labels:
         app: mysql-chungcheong
     spec:
+      initContainers:
+        - name: init-mysql
+          image: busybox
+          command: ['sh', '-c', 'rm -rf /var/lib/mysql/*']
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql
       containers:
         - name: mysql-chungcheong
           image: mysql:5.7
-          ports:
-            - containerPort: 3308
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
@@ -98,14 +123,20 @@ spec:
             - name: MYSQL_DATABASE
               value: "chungcheong"
           volumeMounts:
-            - name: mysql-chungcheong-storage
+            - name: mysql-data
               mountPath: /var/lib/mysql
+            - name: config-volume
+              mountPath: /etc/mysql/conf.d
       volumes:
-        - name: mysql-chungcheong-storage
+        - name: mysql-data
           persistentVolumeClaim:
             claimName: mysql-chungcheong-pvc
+        - name: config-volume
+          configMap:
+            name: mysql-config
 
 ---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -120,11 +151,16 @@ spec:
       labels:
         app: mysql-gyeongsang
     spec:
+      initContainers:
+        - name: init-mysql
+          image: busybox
+          command: ['sh', '-c', 'rm -rf /var/lib/mysql/*']
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql
       containers:
         - name: mysql-gyeongsang
           image: mysql:5.7
-          ports:
-            - containerPort: 3309
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
@@ -134,14 +170,20 @@ spec:
             - name: MYSQL_DATABASE
               value: "gyeongsang"
           volumeMounts:
-            - name: mysql-gyeongsang-storage
+            - name: mysql-data
               mountPath: /var/lib/mysql
+            - name: config-volume
+              mountPath: /etc/mysql/conf.d
       volumes:
-        - name: mysql-gyeongsang-storage
+        - name: mysql-data
           persistentVolumeClaim:
             claimName: mysql-gyeongsang-pvc
+        - name: config-volume
+          configMap:
+            name: mysql-config
 
 ---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -156,11 +198,16 @@ spec:
       labels:
         app: mysql-jeolla
     spec:
+      initContainers:
+        - name: init-mysql
+          image: busybox
+          command: ['sh', '-c', 'rm -rf /var/lib/mysql/*']
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql
       containers:
         - name: mysql-jeolla
           image: mysql:5.7
-          ports:
-            - containerPort: 3310
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
@@ -170,14 +217,20 @@ spec:
             - name: MYSQL_DATABASE
               value: "jeolla"
           volumeMounts:
-            - name: mysql-jeolla-storage
+            - name: mysql-data
               mountPath: /var/lib/mysql
+            - name: config-volume
+              mountPath: /etc/mysql/conf.d
       volumes:
-        - name: mysql-jeolla-storage
+        - name: mysql-data
           persistentVolumeClaim:
             claimName: mysql-jeolla-pvc
+        - name: config-volume
+          configMap:
+            name: mysql-config
 
 ---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -192,11 +245,16 @@ spec:
       labels:
         app: mysql-jeju
     spec:
+      initContainers:
+        - name: init-mysql
+          image: busybox
+          command: ['sh', '-c', 'rm -rf /var/lib/mysql/*']
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql
       containers:
         - name: mysql-jeju
           image: mysql:5.7
-          ports:
-            - containerPort: 3311
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
@@ -206,9 +264,14 @@ spec:
             - name: MYSQL_DATABASE
               value: "jeju"
           volumeMounts:
-            - name: mysql-jeju-storage
+            - name: mysql-data
               mountPath: /var/lib/mysql
+            - name: config-volume
+              mountPath: /etc/mysql/conf.d
       volumes:
-        - name: mysql-jeju-storage
+        - name: mysql-data
           persistentVolumeClaim:
             claimName: mysql-jeju-pvc
+        - name: config-volume
+          configMap:
+            name: mysql-config
