@@ -35,7 +35,6 @@ spec:
               mountPath: /var/lib/mysql
             - name: config-volume
               mountPath: /etc/mysql/conf.d
-              subPath: my.cnf
       volumes:
         - name: mysql-data
           persistentVolumeClaim:
@@ -43,9 +42,6 @@ spec:
         - name: config-volume
           configMap:
             name: mysql-config
-            items:
-              - key: my.cnf
-                path: my.cnf
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -84,7 +80,6 @@ spec:
               mountPath: /var/lib/mysql
             - name: config-volume
               mountPath: /etc/mysql/conf.d
-              subPath: my.cnf
       volumes:
         - name: mysql-data
           persistentVolumeClaim:
@@ -92,10 +87,9 @@ spec:
         - name: config-volume
           configMap:
             name: mysql-config
-            items:
-              - key: my.cnf
-                path: my.cnf
+
 ---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -133,7 +127,6 @@ spec:
               mountPath: /var/lib/mysql
             - name: config-volume
               mountPath: /etc/mysql/conf.d
-              subPath: my.cnf
       volumes:
         - name: mysql-data
           persistentVolumeClaim:
@@ -141,10 +134,9 @@ spec:
         - name: config-volume
           configMap:
             name: mysql-config
-            items:
-              - key: my.cnf
-                path: my.cnf
+
 ---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -182,7 +174,6 @@ spec:
               mountPath: /var/lib/mysql
             - name: config-volume
               mountPath: /etc/mysql/conf.d
-              subPath: my.cnf
       volumes:
         - name: mysql-data
           persistentVolumeClaim:
@@ -190,10 +181,9 @@ spec:
         - name: config-volume
           configMap:
             name: mysql-config
-            items:
-              - key: my.cnf
-                path: my.cnf
+
 ---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -231,7 +221,6 @@ spec:
               mountPath: /var/lib/mysql
             - name: config-volume
               mountPath: /etc/mysql/conf.d
-              subPath: my.cnf
       volumes:
         - name: mysql-data
           persistentVolumeClaim:
@@ -239,10 +228,9 @@ spec:
         - name: config-volume
           configMap:
             name: mysql-config
-            items:
-              - key: my.cnf
-                path: my.cnf
+
 ---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -280,7 +268,6 @@ spec:
               mountPath: /var/lib/mysql
             - name: config-volume
               mountPath: /etc/mysql/conf.d
-              subPath: my.cnf
       volumes:
         - name: mysql-data
           persistentVolumeClaim:
@@ -288,6 +275,3 @@ spec:
         - name: config-volume
           configMap:
             name: mysql-config
-            items:
-              - key: my.cnf
-                path: my.cnf

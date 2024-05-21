@@ -1,5 +1,5 @@
 # 공식 OpenJDK 런타임 이미지를 부모 이미지로 사용합니다.
-FROM --platform=$TARGETPLATFORM openjdk:17-jdk-slim
+FROM openjdk:17-jdk-slim
 
 # 작업 디렉터리를 설정합니다.
 WORKDIR /app
@@ -21,7 +21,7 @@ COPY . .
 RUN ./gradlew build -x test --no-daemon
 
 # 최종 빌드를 위해 더 작은 JRE 이미지를 사용합니다.
-FROM --platform=$TARGETPLATFORM openjdk:17-jdk-slim
+FROM openjdk:17-jdk-slim
 
 # 작업 디렉터리를 설정합니다.
 WORKDIR /app
