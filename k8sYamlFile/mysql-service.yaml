@@ -7,7 +7,6 @@ spec:
     - port: 3306
   selector:
     app: mysql-gyeonggi
-  clusterIP: None
 ---
 apiVersion: v1
 kind: Service
@@ -18,7 +17,6 @@ spec:
     - port: 3307
   selector:
     app: mysql-gangwon
-  clusterIP: None
 ---
 apiVersion: v1
 kind: Service
@@ -29,7 +27,6 @@ spec:
     - port: 3308
   selector:
     app: mysql-chungcheong
-  clusterIP: None
 ---
 apiVersion: v1
 kind: Service
@@ -40,7 +37,6 @@ spec:
     - port: 3309
   selector:
     app: mysql-gyeongsang
-  clusterIP: None
 ---
 apiVersion: v1
 kind: Service
@@ -51,7 +47,6 @@ spec:
     - port: 3310
   selector:
     app: mysql-jeolla
-  clusterIP: None
 ---
 apiVersion: v1
 kind: Service
@@ -62,4 +57,3 @@ spec:
     - port: 3311
   selector:
     app: mysql-jeju
-  clusterIP: None
