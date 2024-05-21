@@ -3,57 +3,70 @@ kind: Service
 metadata:
   name: mysql-gyeonggi
 spec:
-  ports:
-    - port: 3306
   selector:
     app: mysql-gyeonggi
+  ports:
+    - port: 3306
+      targetPort: 3306
+  type: ClusterIP
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: mysql-gangwon
 spec:
-  ports:
-    - port: 3307
   selector:
     app: mysql-gangwon
+  ports:
+    - port: 3306
+      targetPort: 3306
+  type: ClusterIP
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: mysql-chungcheong
 spec:
-  ports:
-    - port: 3308
   selector:
     app: mysql-chungcheong
+  ports:
+    - port: 3306
+      targetPort: 3306
+  type: ClusterIP
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: mysql-gyeongsang
 spec:
-  ports:
-    - port: 3309
   selector:
     app: mysql-gyeongsang
+  ports:
+    - port: 3306
+      targetPort: 3306
+  type: ClusterIP
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: mysql-jeolla
 spec:
-  ports:
-    - port: 3310
   selector:
     app: mysql-jeolla
+  ports:
+    - port: 3306
+      targetPort: 3306
+  type: ClusterIP
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: mysql-jeju
 spec:
-  ports:
-    - port: 3311
   selector:
     app: mysql-jeju
+  ports:
+    - port: 3306
+      targetPort: 3306
+  type: ClusterIP
+---
