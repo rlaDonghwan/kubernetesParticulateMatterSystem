@@ -8,7 +8,7 @@ spec:
   ports:
     - port: 3306
       targetPort: 3306
-      nodePort: 33066
+      nodePort: 3366
   type: NodePort
 ---
 apiVersion: v1
@@ -21,7 +21,7 @@ spec:
   ports:
     - port: 3306
       targetPort: 3306
-      nodePort: 30077
+      nodePort: 3377
   type: NodePort
 ---
 apiVersion: v1
@@ -34,7 +34,7 @@ spec:
   ports:
     - port: 3306
       targetPort: 3306
-      nodePort: 30088
+      nodePort: 3388
   type: NodePort
 ---
 apiVersion: v1
@@ -47,7 +47,7 @@ spec:
   ports:
     - port: 3306
       targetPort: 3306
-      nodePort: 30099
+      nodePort: 3399
   type: NodePort
 ---
 apiVersion: v1
@@ -60,7 +60,7 @@ spec:
   ports:
     - port: 3306
       targetPort: 3306
-      nodePort: 30010
+      nodePort: 3310
   type: NodePort
 ---
 apiVersion: v1
@@ -73,5 +73,5 @@ spec:
   ports:
     - port: 3306
       targetPort: 3306
-      nodePort: 30011
+      nodePort: 3311
   type: NodePort

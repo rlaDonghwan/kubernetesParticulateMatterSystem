@@ -3,8 +3,8 @@ kind: ConfigMap
 metadata:
   name: fine-dust-config
 data:
-  SPRING_DATASOURCE_URL: "jdbc:mysql://mysql-gyeonggi:3306/gyeonggi?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC"
-  SPRING_DATASOURCE_USERNAME: "root"
+  SPRING_GYEONGGI_DATASOURCE_URL: "jdbc:mysql://mysql-gyeonggi:3306/gyeonggi?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC"
+  SPRING_GYEONGGI_DATASOURCE_USERNAME: "root"
 
   SPRING_GANGWON_DATASOURCE_URL: "jdbc:mysql://mysql-gangwon:3306/gangwon?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC"
   SPRING_GANGWON_DATASOURCE_USERNAME: "root"

@@ -53,7 +53,7 @@ public class JeollaDataSourceConfig {
     private Map<String, Object> hibernateProperties() {
         Map<String, Object> properties = new HashMap<>();
         properties.put("hibernate.hbm2ddl.auto", "update");
-        properties.put("hibernate.dialect", "org.hibernate.dialect.MySQL57Dialect");
+        properties.put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
         return properties;
     }
 }
