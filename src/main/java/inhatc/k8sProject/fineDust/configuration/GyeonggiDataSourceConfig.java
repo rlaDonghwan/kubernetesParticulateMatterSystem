@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.util.HashMap;
 import java.util.Map;
+
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(
@@ -30,7 +31,7 @@ public class GyeonggiDataSourceConfig {
 
     @Bean
     @Primary
-    @ConfigurationProperties(prefix = "spring.datasource")
+    @ConfigurationProperties(prefix = "spring.gyeonggi.datasource") // spring.datasource가 아닌 spring.gyeonggi.datasource로 변경
     public DataSource gyeonggiDataSource() {
         return DataSourceBuilder.create().build(); // 경기도용 데이터 소스 빌드 및 생성
     }
@@ -58,7 +59,7 @@ public class GyeonggiDataSourceConfig {
     private Map<String, Object> hibernateProperties() {
         Map<String, Object> properties = new HashMap<>();
         properties.put("hibernate.hbm2ddl.auto", "update"); // 필요에 따라 "none", "create", "create-drop"으로 변경 가능
-        properties.put("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect"); // MySQL 5.7 방언 사용
+        properties.put("hibernate.dialect", "org.hibernate.dialect.MySQL57Dialect"); // MySQL 5.7 방언 사용
         return properties;
     }
 }

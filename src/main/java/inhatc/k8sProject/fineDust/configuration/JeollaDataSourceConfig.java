@@ -52,8 +52,8 @@ public class JeollaDataSourceConfig {
 
     private Map<String, Object> hibernateProperties() {
         Map<String, Object> properties = new HashMap<>();
-        properties.put("hibernate.hbm2ddl.auto", "update"); // 필요에 따라 "none", "create", "create-drop"으로 변경 가능
-        properties.put("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect"); // MySQL 5.7 방언 사용
+        properties.put("hibernate.hbm2ddl.auto", "update");
+        properties.put("hibernate.dialect", "org.hibernate.dialect.MySQL57Dialect");
         return properties;
     }
 }

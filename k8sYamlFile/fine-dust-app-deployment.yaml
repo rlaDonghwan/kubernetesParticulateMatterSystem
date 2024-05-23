@@ -31,32 +31,32 @@ spec:
             - name: SPRING_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: fine-dust-secrets
+                  name: fine-dust-app-secrets
                   key: SPRING_DATASOURCE_PASSWORD
             - name: SPRING_GANGWON_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: fine-dust-secrets
+                  name: fine-dust-app-secrets
                   key: SPRING_GANGWON_DATASOURCE_PASSWORD
             - name: SPRING_CHUNGCHEONG_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: fine-dust-secrets
+                  name: fine-dust-app-secrets
                   key: SPRING_CHUNGCHEONG_DATASOURCE_PASSWORD
             - name: SPRING_GYEONGSANG_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: fine-dust-secrets
+                  name: fine-dust-app-secrets
                   key: SPRING_GYEONGSANG_DATASOURCE_PASSWORD
             - name: SPRING_JEOLLA_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: fine-dust-secrets
+                  name: fine-dust-app-secrets
                   key: SPRING_JEOLLA_DATASOURCE_PASSWORD
             - name: SPRING_JEJU_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: fine-dust-secrets
+                  name: fine-dust-app-secrets
                   key: SPRING_JEJU_DATASOURCE_PASSWORD
           livenessProbe:
             httpGet:

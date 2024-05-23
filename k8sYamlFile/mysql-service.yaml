@@ -8,7 +8,8 @@ spec:
   ports:
     - port: 3306
       targetPort: 3306
-  type: ClusterIP
+      nodePort: 33066
+  type: NodePort
 ---
 apiVersion: v1
 kind: Service
@@ -20,7 +21,8 @@ spec:
   ports:
     - port: 3306
       targetPort: 3306
-  type: ClusterIP
+      nodePort: 30077
+  type: NodePort
 ---
 apiVersion: v1
 kind: Service
@@ -32,7 +34,8 @@ spec:
   ports:
     - port: 3306
       targetPort: 3306
-  type: ClusterIP
+      nodePort: 30088
+  type: NodePort
 ---
 apiVersion: v1
 kind: Service
@@ -44,7 +47,8 @@ spec:
   ports:
     - port: 3306
       targetPort: 3306
-  type: ClusterIP
+      nodePort: 30099
+  type: NodePort
 ---
 apiVersion: v1
 kind: Service
@@ -56,7 +60,8 @@ spec:
   ports:
     - port: 3306
       targetPort: 3306
-  type: ClusterIP
+      nodePort: 30010
+  type: NodePort
 ---
 apiVersion: v1
 kind: Service
@@ -68,5 +73,5 @@ spec:
   ports:
     - port: 3306
       targetPort: 3306
-  type: ClusterIP
----
+      nodePort: 30011
+  type: NodePort
