@@ -42,7 +42,7 @@ public class JejuStationInfoService {
     private String serviceKey;
 
 
-    @Scheduled(cron = "0 20 * * * *")
+    @Scheduled(cron = "0 */10 * * * *")
     public void updateAirQualityDataAutomatically() {
         String sidoName = "제주";
         fetchAndSaveJejuStationInfo(sidoName); // 제주도 측정소 정보 가져와 저장

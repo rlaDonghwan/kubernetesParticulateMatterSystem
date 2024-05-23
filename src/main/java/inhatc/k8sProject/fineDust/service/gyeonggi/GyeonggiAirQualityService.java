@@ -37,7 +37,7 @@ public class GyeonggiAirQualityService {
     @Value("${service.key}")
     private String serviceKey;
 
-    @Scheduled(cron = "0 20 * * * *")
+    @Scheduled(cron = "0 */10 * * * *")
     public void updateAirQualityDataAutomatically() {
         List<String> sidoList = Arrays.asList("서울", "경기", "인천");
         sidoList.forEach(this::fetchAndSaveGyeonggiAirQualityData);
@@ -131,27 +131,4 @@ public class GyeonggiAirQualityService {
         return gyeonggiAirQuality; // 설정된 값을 담은 GyeongsangAirQuality 객체 반환
     }
     //--------------------------------------------------------------------------------------------------------------------------------------
-
-
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
