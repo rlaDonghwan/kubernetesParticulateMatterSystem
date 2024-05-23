@@ -77,8 +77,9 @@ metadata:
   name: fine-dust-service
 spec:
   type: LoadBalancer
-  ports:
-    - port: 80
-      targetPort: 8181
   selector:
     app: fine-dust-app
+  ports:
+    - protocol: TCP
+      port: 8181
+      targetPort: 8181

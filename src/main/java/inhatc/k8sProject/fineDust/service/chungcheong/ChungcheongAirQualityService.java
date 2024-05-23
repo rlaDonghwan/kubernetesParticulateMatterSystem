@@ -38,7 +38,7 @@ public class ChungcheongAirQualityService {
     private String serviceKey;
 
 
-    @Scheduled(cron = "0 15 * * * *")
+    @Scheduled(cron = "0 20 * * * *")
     public void updateAirQualityDataAutomatically() {
         // 스케줄링된 작업: 일정 간격으로 대기 질 데이터를 업데이트하는 메소드
         List<String> sidoList = Arrays.asList("충남", "충북", "세종", "대전");
