@@ -28,11 +28,11 @@ spec:
             - configMapRef:
                 name: fine-dust-config
           env:
-            - name: SPRING_DATASOURCE_PASSWORD
+            - name: SPRING_GYEONGGI_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: fine-dust-app-secrets
-                  key: SPRING_DATASOURCE_PASSWORD
+                  key: SPRING_GYEONGGI_DATASOURCE_PASSWORD
             - name: SPRING_GANGWON_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
