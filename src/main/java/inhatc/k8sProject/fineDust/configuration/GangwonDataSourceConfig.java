@@ -12,12 +12,14 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
+@EnableTransactionManagement
 @EnableJpaRepositories(
         basePackages = "inhatc.k8sProject.fineDust.repository.gangwon",
         entityManagerFactoryRef = "gangwonEntityManagerFactory",
@@ -51,8 +53,8 @@ public class GangwonDataSourceConfig {
 
     private Map<String, Object> hibernateProperties() {
         Map<String, Object> properties = new HashMap<>();
-        properties.put("hibernate.hbm2ddl.auto", "update"); // Change to "none", "create", "create-drop" as needed
-        properties.put("hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect"); // Change to your DB dialect
+        properties.put("hibernate.hbm2ddl.auto", "update"); // 필요에 따라 "none", "create", "create-drop"으로 변경 가능
+        properties.put("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect"); // MySQL 5.7 방언 사용
         return properties;
     }
 }
