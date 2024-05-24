@@ -8,8 +8,7 @@ spec:
   ports:
     - port: 3306
       targetPort: 3306
-      nodePort: 30036
-  type: NodePort
+  type: LoadBalancer
 ---
 apiVersion: v1
 kind: Service
@@ -21,8 +20,7 @@ spec:
   ports:
     - port: 3306
       targetPort: 3306
-      nodePort: 30037
-  type: NodePort
+  type: LoadBalancer
 ---
 apiVersion: v1
 kind: Service
@@ -34,8 +32,7 @@ spec:
   ports:
     - port: 3306
       targetPort: 3306
-      nodePort: 30038
-  type: NodePort
+  type: LoadBalancer
 ---
 apiVersion: v1
 kind: Service
@@ -47,8 +44,7 @@ spec:
   ports:
     - port: 3306
       targetPort: 3306
-      nodePort: 30039
-  type: NodePort
+  type: LoadBalancer
 ---
 apiVersion: v1
 kind: Service
@@ -60,8 +56,7 @@ spec:
   ports:
     - port: 3306
       targetPort: 3306
-      nodePort: 30040
-  type: NodePort
+  type: LoadBalancer
 ---
 apiVersion: v1
 kind: Service
@@ -73,5 +68,4 @@ spec:
   ports:
     - port: 3306
       targetPort: 3306
-      nodePort: 30041
-  type: NodePort
+  type: LoadBalancer

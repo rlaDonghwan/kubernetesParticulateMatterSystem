@@ -35,6 +35,22 @@ spec:
               mountPath: /var/lib/mysql
             - name: config-volume
               mountPath: /etc/mysql/conf.d
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - mysqladmin ping -u root -p$MYSQL_ROOT_PASSWORD
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - mysqladmin ping -u root -p$MYSQL_ROOT_PASSWORD
+            initialDelaySeconds: 60
+            periodSeconds: 10
       volumes:
         - name: mysql-data
           persistentVolumeClaim:
@@ -80,6 +96,22 @@ spec:
               mountPath: /var/lib/mysql
             - name: config-volume
               mountPath: /etc/mysql/conf.d
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - mysqladmin ping -u root -p$MYSQL_ROOT_PASSWORD
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - mysqladmin ping -u root -p$MYSQL_ROOT_PASSWORD
+            initialDelaySeconds: 60
+            periodSeconds: 10
       volumes:
         - name: mysql-data
           persistentVolumeClaim:
@@ -87,9 +119,7 @@ spec:
         - name: config-volume
           configMap:
             name: mysql-config
-
 ---
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -127,6 +157,22 @@ spec:
               mountPath: /var/lib/mysql
             - name: config-volume
               mountPath: /etc/mysql/conf.d
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - mysqladmin ping -u root -p$MYSQL_ROOT_PASSWORD
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - mysqladmin ping -u root -p$MYSQL_ROOT_PASSWORD
+            initialDelaySeconds: 60
+            periodSeconds: 10
       volumes:
         - name: mysql-data
           persistentVolumeClaim:
@@ -134,9 +180,7 @@ spec:
         - name: config-volume
           configMap:
             name: mysql-config
-
 ---
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -174,6 +218,22 @@ spec:
               mountPath: /var/lib/mysql
             - name: config-volume
               mountPath: /etc/mysql/conf.d
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - mysqladmin ping -u root -p$MYSQL_ROOT_PASSWORD
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - mysqladmin ping -u root -p$MYSQL_ROOT_PASSWORD
+            initialDelaySeconds: 60
+            periodSeconds: 10
       volumes:
         - name: mysql-data
           persistentVolumeClaim:
@@ -181,9 +241,7 @@ spec:
         - name: config-volume
           configMap:
             name: mysql-config
-
 ---
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -221,6 +279,22 @@ spec:
               mountPath: /var/lib/mysql
             - name: config-volume
               mountPath: /etc/mysql/conf.d
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - mysqladmin ping -u root -p$MYSQL_ROOT_PASSWORD
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - mysqladmin ping -u root -p$MYSQL_ROOT_PASSWORD
+            initialDelaySeconds: 60
+            periodSeconds: 10
       volumes:
         - name: mysql-data
           persistentVolumeClaim:
@@ -228,9 +302,7 @@ spec:
         - name: config-volume
           configMap:
             name: mysql-config
-
 ---
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -268,6 +340,22 @@ spec:
               mountPath: /var/lib/mysql
             - name: config-volume
               mountPath: /etc/mysql/conf.d
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - mysqladmin ping -u root -p$MYSQL_ROOT_PASSWORD
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - mysqladmin ping -u root -p$MYSQL_ROOT_PASSWORD
+            initialDelaySeconds: 60
+            periodSeconds: 10
       volumes:
         - name: mysql-data
           persistentVolumeClaim:
