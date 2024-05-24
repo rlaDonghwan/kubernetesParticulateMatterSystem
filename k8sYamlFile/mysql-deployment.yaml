@@ -35,7 +35,6 @@ spec:
               mountPath: /var/lib/mysql
             - name: config-volume
               mountPath: /etc/mysql/conf.d
-              subPath: my.cnf
           livenessProbe:
             exec:
               command:
@@ -59,9 +58,6 @@ spec:
         - name: config-volume
           configMap:
             name: mysql-config
-            items:
-              - key: my.cnf
-                path: my.cnf
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -100,7 +96,6 @@ spec:
               mountPath: /var/lib/mysql
             - name: config-volume
               mountPath: /etc/mysql/conf.d
-              subPath: my.cnf
           livenessProbe:
             exec:
               command:
@@ -124,9 +119,6 @@ spec:
         - name: config-volume
           configMap:
             name: mysql-config
-            items:
-              - key: my.cnf
-                path: my.cnf
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -165,7 +157,6 @@ spec:
               mountPath: /var/lib/mysql
             - name: config-volume
               mountPath: /etc/mysql/conf.d
-              subPath: my.cnf
           livenessProbe:
             exec:
               command:
@@ -189,9 +180,6 @@ spec:
         - name: config-volume
           configMap:
             name: mysql-config
-            items:
-              - key: my.cnf
-                path: my.cnf
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -230,7 +218,6 @@ spec:
               mountPath: /var/lib/mysql
             - name: config-volume
               mountPath: /etc/mysql/conf.d
-              subPath: my.cnf
           livenessProbe:
             exec:
               command:
@@ -254,9 +241,6 @@ spec:
         - name: config-volume
           configMap:
             name: mysql-config
-            items:
-              - key: my.cnf
-                path: my.cnf
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -295,7 +279,6 @@ spec:
               mountPath: /var/lib/mysql
             - name: config-volume
               mountPath: /etc/mysql/conf.d
-              subPath: my.cnf
           livenessProbe:
             exec:
               command:
@@ -319,9 +302,6 @@ spec:
         - name: config-volume
           configMap:
             name: mysql-config
-            items:
-              - key: my.cnf
-                path: my.cnf
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -360,7 +340,6 @@ spec:
               mountPath: /var/lib/mysql
             - name: config-volume
               mountPath: /etc/mysql/conf.d
-              subPath: my.cnf
           livenessProbe:
             exec:
               command:
@@ -384,6 +363,3 @@ spec:
         - name: config-volume
           configMap:
             name: mysql-config
-            items:
-              - key: my.cnf
-                path: my.cnf
