@@ -1,0 +1,54 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mysql-ingress
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /gyeonggi
+            pathType: Prefix
+            backend:
+              service:
+                name: mysql-gyeonggi
+                port:
+                  number: 3306
+          - path: /gangwon
+            pathType: Prefix
+            backend:
+              service:
+                name: mysql-gangwon
+                port:
+                  number: 3306
+          - path: /chungcheong
+            pathType: Prefix
+            backend:
+              service:
+                name: mysql-chungcheong
+                port:
+                  number: 3306
+          - path: /gyeongsang
+            pathType: Prefix
+            backend:
+              service:
+                name: mysql-gyeongsang
+                port:
+                  number: 3306
+          - path: /jeolla
+            pathType: Prefix
+            backend:
+              service:
+                name: mysql-jeolla
+                port:
+                  number: 3306
+          - path: /jeju
+            pathType: Prefix
+            backend:
+              service:
+                name: mysql-jeju
+                port:
+                  number: 3306

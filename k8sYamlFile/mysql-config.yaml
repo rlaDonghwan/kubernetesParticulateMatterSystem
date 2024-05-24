@@ -7,3 +7,6 @@ data:
     [mysqld]
     sql_mode=STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION
     explicit_defaults_for_timestamp=true
+    max_allowed_packet=64M
+    interactive_timeout=28800
+    wait_timeout=28800
