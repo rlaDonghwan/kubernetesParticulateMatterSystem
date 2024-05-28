@@ -13,7 +13,6 @@ import java.util.Optional;
 @Repository
 public interface GangwonStationInfoRepository extends JpaRepository<GangwonStationInfo, Long> {
 
-
     GangwonStationInfo save(GangwonStationInfo gangwonStationInfo);
 
     Optional<GangwonStationInfo> findTopByOrderByInPutDataTimeDesc();
