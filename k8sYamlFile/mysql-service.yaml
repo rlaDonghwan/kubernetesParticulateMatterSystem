@@ -51,4 +51,33 @@ spec:
     app: mysql-gyeongsang
   ports:
     - port: 3306
-
+      targetPort: 3306
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-jeolla
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+spec:
+  selector:
+    app: mysql-jeolla
+  ports:
+    - port: 3306
+      targetPort: 3306
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-jeju
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+spec:
+  selector:
+    app: mysql-jeju
+  ports:
+    - port: 3306
+      targetPort: 3306
+  type: LoadBalancer

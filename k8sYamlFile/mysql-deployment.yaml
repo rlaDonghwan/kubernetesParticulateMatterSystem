@@ -35,6 +35,8 @@ spec:
               mountPath: /var/lib/mysql
             - name: config-volume
               mountPath: /etc/mysql/conf.d
+            - name: config-init
+              mountPath: /docker-entrypoint-initdb.d
           livenessProbe:
             exec:
               command:
@@ -58,6 +60,15 @@ spec:
         - name: config-volume
           configMap:
             name: mysql-config
+            items:
+              - key: my.cnf
+                path: my.cnf
+        - name: config-init
+          configMap:
+            name: mysql-config
+            items:
+              - key: init.sql
+                path: init.sql
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -96,6 +107,8 @@ spec:
               mountPath: /var/lib/mysql
             - name: config-volume
               mountPath: /etc/mysql/conf.d
+            - name: config-init
+              mountPath: /docker-entrypoint-initdb.d
           livenessProbe:
             exec:
               command:
@@ -119,6 +132,15 @@ spec:
         - name: config-volume
           configMap:
             name: mysql-config
+            items:
+              - key: my.cnf
+                path: my.cnf
+        - name: config-init
+          configMap:
+            name: mysql-config
+            items:
+              - key: init.sql
+                path: init.sql
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -157,6 +179,8 @@ spec:
               mountPath: /var/lib/mysql
             - name: config-volume
               mountPath: /etc/mysql/conf.d
+            - name: config-init
+              mountPath: /docker-entrypoint-initdb.d
           livenessProbe:
             exec:
               command:
@@ -180,6 +204,15 @@ spec:
         - name: config-volume
           configMap:
             name: mysql-config
+            items:
+              - key: my.cnf
+                path: my.cnf
+        - name: config-init
+          configMap:
+            name: mysql-config
+            items:
+              - key: init.sql
+                path: init.sql
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -218,6 +251,8 @@ spec:
               mountPath: /var/lib/mysql
             - name: config-volume
               mountPath: /etc/mysql/conf.d
+            - name: config-init
+              mountPath: /docker-entrypoint-initdb.d
           livenessProbe:
             exec:
               command:
@@ -241,6 +276,15 @@ spec:
         - name: config-volume
           configMap:
             name: mysql-config
+            items:
+              - key: my.cnf
+                path: my.cnf
+        - name: config-init
+          configMap:
+            name: mysql-config
+            items:
+              - key: init.sql
+                path: init.sql
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -279,6 +323,8 @@ spec:
               mountPath: /var/lib/mysql
             - name: config-volume
               mountPath: /etc/mysql/conf.d
+            - name: config-init
+              mountPath: /docker-entrypoint-initdb.d
           livenessProbe:
             exec:
               command:
@@ -302,6 +348,15 @@ spec:
         - name: config-volume
           configMap:
             name: mysql-config
+            items:
+              - key: my.cnf
+                path: my.cnf
+        - name: config-init
+          configMap:
+            name: mysql-config
+            items:
+              - key: init.sql
+                path: init.sql
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -340,6 +395,8 @@ spec:
               mountPath: /var/lib/mysql
             - name: config-volume
               mountPath: /etc/mysql/conf.d
+            - name: config-init
+              mountPath: /docker-entrypoint-initdb.d
           livenessProbe:
             exec:
               command:
@@ -363,3 +420,12 @@ spec:
         - name: config-volume
           configMap:
             name: mysql-config
+            items:
+              - key: my.cnf
+                path: my.cnf
+        - name: config-init
+          configMap:
+            name: mysql-config
+            items:
+              - key: init.sql
+                path: init.sql
