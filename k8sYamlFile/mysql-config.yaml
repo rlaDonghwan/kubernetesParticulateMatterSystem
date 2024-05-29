@@ -10,21 +10,3 @@ data:
     max_allowed_packet=64M
     interactive_timeout=28800
     wait_timeout=28800
-  init.sql: |
-    ALTER TABLE ChungcheongAirQuality CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-    ALTER TABLE ChungcheongStationInfo CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-
-    ALTER TABLE GangwonAirQuality CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-    ALTER TABLE GangwonStationInfo CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-
-    ALTER TABLE GyeonggiAirQuality CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-    ALTER TABLE GyeonggiStationInfo CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-
-    ALTER TABLE GyeongsangAirQuality CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-    ALTER TABLE GyeongsangStationInfo CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-
-    ALTER TABLE JejuAirQuality CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-    ALTER TABLE JejuStationInfo CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-
-    ALTER TABLE JeollaAirQuality CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-    ALTER TABLE JeollaStationInfo CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
