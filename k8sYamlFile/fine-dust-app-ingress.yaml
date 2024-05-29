@@ -3,8 +3,11 @@ kind: Ingress
 metadata:
   name: fine-dust-ingress
   annotations:
+    kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+    alb.ingress.kubernetes.io/backend-protocol: HTTP
 spec:
   rules:
     - http:
@@ -16,4 +19,3 @@ spec:
                 name: fine-dust-service
                 port:
                   number: 8181
----

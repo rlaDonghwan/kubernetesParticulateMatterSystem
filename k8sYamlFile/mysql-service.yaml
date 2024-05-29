@@ -2,6 +2,8 @@ apiVersion: v1
 kind: Service
 metadata:
   name: mysql-gyeonggi
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
 spec:
   selector:
     app: mysql-gyeonggi
@@ -14,6 +16,8 @@ apiVersion: v1
 kind: Service
 metadata:
   name: mysql-gangwon
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
 spec:
   selector:
     app: mysql-gangwon
@@ -26,6 +30,8 @@ apiVersion: v1
 kind: Service
 metadata:
   name: mysql-chungcheong
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
 spec:
   selector:
     app: mysql-chungcheong
@@ -38,34 +44,11 @@ apiVersion: v1
 kind: Service
 metadata:
   name: mysql-gyeongsang
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
 spec:
   selector:
     app: mysql-gyeongsang
   ports:
     - port: 3306
-      targetPort: 3306
-  type: LoadBalancer
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: mysql-jeolla
-spec:
-  selector:
-    app: mysql-jeolla
-  ports:
-    - port: 3306
-      targetPort: 3306
-  type: LoadBalancer
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: mysql-jeju
-spec:
-  selector:
-    app: mysql-jeju
-  ports:
-    - port: 3306
-      targetPort: 3306
-  type: LoadBalancer
+
