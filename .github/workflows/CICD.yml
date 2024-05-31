@@ -19,7 +19,7 @@ jobs:
         java-version: '17'
 
     - name: Build with Gradle
-      run: ./gradlew build
+      run: ./gradlew build -x test
 
     - name: Log in to Docker Hub
       uses: docker/login-action@v1
@@ -29,8 +29,8 @@ jobs:
 
     - name: Build and push Docker image
       run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/your-app:$GITHUB_SHA .
-        docker push ${{ secrets.DOCKER_USERNAME }}/your-app:$GITHUB_SHA
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/kdonghwan/k8s_finedust_system:latest
+        docker push ${{ secrets.DOCKER_USERNAME }}/kdonghwan/k8s_finedust_system:latest
 
   deploy:
     runs-on: ubuntu-latest
@@ -48,7 +48,7 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: <your-region>
+        aws-region: ap-northeast-2
 
     - name: Setup kubeconfig
       run: |
@@ -56,5 +56,5 @@ jobs:
 
     - name: Deploy to EKS
       run: |
-        kubectl set image deployment/fine-dust-app fine-dust-app=${{ secrets.DOCKER_USERNAME }}/your-app:$GITHUB_SHA
+        kubectl set image deployment/fine-dust-app fine-dust-app=${{ secrets.DOCKER_USERNAME }}/kdonghwan/k8s_finedust_system:latest
         kubectl rollout status deployment/fine-dust-app
