@@ -47,6 +47,7 @@ jobs:
 
     - name: Setup kubeconfig
       run: |
+        mkdir -p ~/.kube
         echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 --decode > ~/.kube/config
 
     - name: Deploy to EKS
