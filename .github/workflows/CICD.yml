@@ -30,8 +30,9 @@ jobs:
 
     - name: Build and push Docker image
       run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/k8s_finedust_system:latest .
-        docker push ${{ secrets.DOCKER_USERNAME }}/k8s_finedust_system:latest
+        IMAGE_TAG=${{ github.sha }}
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/k8s_finedust_system:$IMAGE_TAG .
+        docker push ${{ secrets.DOCKER_USERNAME }}/k8s_finedust_system:$IMAGE_TAG
 
     - name: Install kubectl
       uses: azure/setup-kubectl@v3
@@ -54,7 +55,9 @@ jobs:
     - name: Change permissions for kubeconfig
       run: chmod 600 ~/.kube/config
 
-    - name: Deploy to EKS
+    - name: Update Kubernetes deployment
       run: |
+        IMAGE_TAG=${{ github.sha }}
+        sed -i "s|image: kdonghwan/k8s_finedust_system:.*|image: kdonghwan/k8s_finedust_system:$IMAGE_TAG|g" ./k8sYamlFile/fine-dust-app-deployment.yaml
         kubectl apply -f ./k8sYamlFile/fine-dust-app-deployment.yaml
         kubectl rollout status -f ./k8sYamlFile/fine-dust-app-deployment.yaml
