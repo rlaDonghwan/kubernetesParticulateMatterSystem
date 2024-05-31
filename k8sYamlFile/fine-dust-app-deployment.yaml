@@ -15,6 +15,7 @@ spec:
       containers:
         - name: fine-dust-app
           image: kdonghwan/k8s_finedust_system:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8181
           resources:
