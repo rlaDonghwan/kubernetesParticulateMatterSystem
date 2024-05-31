@@ -56,6 +56,5 @@ jobs:
 
     - name: Deploy to EKS
       run: |
-        cd /root/project/k8s_finedust_system/k8sYamlFile
-        sudo kubectl apply -f fine-dust-app-deployment.yaml
-        sudo kubectl rollout status -f fine-dust-app-deployment.yaml
+        kubectl apply -f ./k8sYamlFile/fine-dust-app-deployment.yaml
+        kubectl rollout status -f ./k8sYamlFile/fine-dust-app-deployment.yaml
