@@ -43,6 +43,7 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-northeast-2 # AWS 리전 지정
 
     - name: Setup kubeconfig
       run: echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 --decode > ~/.kube/config
