@@ -43,15 +43,11 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ap-northeast-2
 
     - name: Setup kubeconfig
-      run: |
-        mkdir -p ~/.kube
-        echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 --decode > ~/.kube/config
+      run: echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 --decode > ~/.kube/config
 
     - name: Deploy to EKS
       run: |
-        kubectl apply -f fine-dust-app-deployment.yaml
-        kubectl set image deployment/fine-dust-app fine-dust-app=${{ secrets.DOCKER_USERNAME }}/k8s_finedust_system:latest
-        kubectl rollout status deployment/fine-dust-app
+        kubectl apply -f /root/project/k8s_finedust_system/k8sYamlFile/fine-dust-app-deployment.yaml
+        kubectl rollout status -f /root/project/k8s_finedust_system/k8sYamlFile/fine-dust-app-deployment.yaml
