@@ -51,7 +51,11 @@ jobs:
     - name: Setup kubeconfig
       run: echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 --decode > ~/.kube/config
 
+    - name: Change permissions for kubeconfig
+      run: chmod 600 ~/.kube/config
+
     - name: Deploy to EKS
       run: |
-        sudo kubectl apply -f /root/project/k8s_finedust_system/k8sYamlFile/fine-dust-app-deployment.yaml
-        sudo kubectl rollout status -f /root/project/k8s_finedust_system/k8sYamlFile/fine-dust-app-deployment.yaml
+        cd /root/project/k8s_finedust_system/k8sYamlFile
+        sudo kubectl apply -f fine-dust-app-deployment.yaml
+        sudo kubectl rollout status -f fine-dust-app-deployment.yaml
