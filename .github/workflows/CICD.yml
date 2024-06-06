@@ -31,8 +31,8 @@ jobs:
     - name: Build and push Docker image
       run: |
         IMAGE_TAG=${{ github.sha }}
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/k8s_finedust_system:$IMAGE_TAG .
-        docker push ${{ secrets.DOCKER_USERNAME }}/k8s_finedust_system:$IMAGE_TAG
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/kdonghwan/kubernetes_particulate_matter_system:$IMAGE_TAG .
+        docker push ${{ secrets.DOCKER_USERNAME }}/kdonghwan/kubernetes_particulate_matter_system:$IMAGE_TAG .
 
     - name: Install kubectl
       uses: azure/setup-kubectl@v3
@@ -58,6 +58,6 @@ jobs:
     - name: Update Kubernetes deployment
       run: |
         IMAGE_TAG=${{ github.sha }}
-        sed -i "s|image: kdonghwan/k8s_finedust_system:.*|image: kdonghwan/k8s_finedust_system:$IMAGE_TAG|g" ./k8sYamlFile/fine-dust-app-deployment.yaml
-        kubectl apply -f ./k8sYamlFile/fine-dust-app-deployment.yaml
-        kubectl rollout status -f ./k8sYamlFile/fine-dust-app-deployment.yaml
+        sed -i "s|image: kdonghwan/kubernetes_particulate_matter_system:.*|image: kdonghwan/kubernetes_particulate_matter_system:$IMAGE_TAG|g" ./k8sYamlFile/particulate_matter_deployment.yaml
+        kubectl apply -f ./k8sYamlFile/particulate_matter_deployment.yaml
+        kubectl rollout status -f ./k8sYamlFile/particulate_matter_deployment.yaml
