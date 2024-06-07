@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: particulate_matter_app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: particulate_matter_app
+  template:
+    metadata:
+      labels:
+        app: particulate_matter_app
+    spec:
+      containers:
+        - name: particulate_matter_app
+          image: kdonghwan/kubernetes_particulate_matter_system:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8181
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+          envFrom:
+            - configMapRef:
+                name: particulate_matter_config
+          env:
+            - name: SPRING_GYEONGGI_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: particulate_matter_secrets
+                  key: SPRING_GYEONGGI_DATASOURCE_PASSWORD
+            - name: SPRING_GANGWON_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: particulate_matter_secrets
+                  key: SPRING_GANGWON_DATASOURCE_PASSWORD
+            - name: SPRING_CHUNGCHEONG_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: particulate_matter_secrets
+                  key: SPRING_CHUNGCHEONG_DATASOURCE_PASSWORD
+            - name: SPRING_GYEONGSANG_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: particulate_matter_secrets
+                  key: SPRING_GYEONGSANG_DATASOURCE_PASSWORD
+            - name: SPRING_JEOLLA_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: particulate_matter_secrets
+                  key: SPRING_JEOLLA_DATASOURCE_PASSWORD
+            - name: SPRING_JEJU_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: particulate_matter_secrets
+                  key: SPRING_JEJU_DATASOURCE_PASSWORD
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8181
+            initialDelaySeconds: 120
+            periodSeconds: 10
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8181
+            initialDelaySeconds: 120
+            periodSeconds: 10
+            timeoutSeconds: 5
+          lifecycle:
+            postStart:
+              exec:
+                command: ["/bin/sh", "-c", "echo Container started"]
+            preStop:
+              exec:
+                command: ["/bin/sh", "-c", "echo Container stopped"]
+        - name: busybox
+          image: alpine
+          command: ['sh', '-c', 'apk add --no-cache curl && sleep 3600']

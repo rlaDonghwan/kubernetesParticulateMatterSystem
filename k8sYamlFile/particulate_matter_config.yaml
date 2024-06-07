@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: particulate_matter_config
+data:
+  SPRING_GYEONGGI_DATASOURCE_URL: "jdbc:mysql://mysql-gyeonggi:3306/gyeonggi?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC"
+  SPRING_GYEONGGI_DATASOURCE_USERNAME: "root"
+
+  SPRING_GANGWON_DATASOURCE_URL: "jdbc:mysql://mysql-gangwon:3306/gangwon?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC"
+  SPRING_GANGWON_DATASOURCE_USERNAME: "root"
+
+  SPRING_CHUNGCHEONG_DATASOURCE_URL: "jdbc:mysql://mysql-chungcheong:3306/chungcheong?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC"
+  SPRING_CHUNGCHEONG_DATASOURCE_USERNAME: "root"
+
+  SPRING_GYEONGSANG_DATASOURCE_URL: "jdbc:mysql://mysql-gyeongsang:3306/gyeongsang?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC"
+  SPRING_GYEONGSANG_DATASOURCE_USERNAME: "root"
+
+  SPRING_JEOLLA_DATASOURCE_URL: "jdbc:mysql://mysql-jeolla:3306/jeolla?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC"
+  SPRING_JEOLLA_DATASOURCE_USERNAME: "root"
+
+  SPRING_JEJU_DATASOURCE_URL: "jdbc:mysql://mysql-jeju:3306/jeju?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC"
+  SPRING_JEJU_DATASOURCE_USERNAME: "root"
