@@ -35,7 +35,7 @@ public class GangwonAirQualityService {
     @Value("${service.key}") // 애플리케이션 속성 파일에서 가져온 값
     private String serviceKey;
 
-    @Scheduled(cron = "0 */10 * * * *")
+    @Scheduled(cron = "0 */20 * * * *")
     public void updateAirQualityDataAutomatically() {
         String sidoName = "강원"; // 대상 지역 이름
         fetchAndSaveGangwonAirQualityData(sidoName); // 해당 지역의 대기 질 데이터 가져와 저장

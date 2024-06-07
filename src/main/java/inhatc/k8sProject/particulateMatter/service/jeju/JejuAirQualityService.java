@@ -36,14 +36,14 @@ public class JejuAirQualityService {
     private String serviceKey;
 
 
-    @Scheduled(cron = "0 */10 * * * *")
+    @Scheduled(cron = "0 */20 * * * *")
     public void updateAirQualityDataAutomatically() {
         String sidoName = "제주"; // 제주도의 시도명
         fetchAndSaveJejuAirQualityData(sidoName); // 제주도 대기 질 데이터 가져와 저장
     }
     //--------------------------------------------------------------------------------------------------------------------------------------
 
-    // 제주 지역 대기 질 데이터를 가져와 저장하는 메서드
+    // 제주 지역 대기 질 데이터를 가s져와 저장하는 메서드
     @Transactional("jejuTransactionManager")
     public void fetchAndSaveJejuAirQualityData(String sidoName) {
         try {
