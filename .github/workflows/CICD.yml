@@ -10,51 +10,54 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Set up JDK 17
-      uses: actions/setup-java@v2
-      with:
-        distribution: 'temurin'
-        java-version: '17'
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: '17'
 
-    - name: Build with Gradle
-      run: ./gradlew build -x test
+      - name: Build with Gradle
+        run: ./gradlew build -x test
 
-    - name: Log in to Docker Hub
-      uses: docker/login-action@v1
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Build and push Docker image
-      run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/k8s_finedust_system:latest .
-        docker push ${{ secrets.DOCKER_USERNAME }}/k8s_finedust_system:latest
+      - name: Build and push Docker image
+        run: |
+          IMAGE_TAG=${{ github.sha }}
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/kubernetes_particulate_matter_system:$IMAGE_TAG .
+          docker push ${{ secrets.DOCKER_USERNAME }}/kdonghwan/kubernetes_particulate_matter_system:$IMAGE_TAG .
 
-    - name: Install kubectl
-      uses: azure/setup-kubectl@v3
-      with:
-        version: 'latest'
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
 
-    - name: Setup AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ap-northeast-2
+      - name: Setup AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
 
-    - name: Create .kube directory
-      run: mkdir -p ~/.kube
+      - name: Create .kube directory
+        run: mkdir -p ~/.kube
 
-    - name: Setup kubeconfig
-      run: echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 --decode > ~/.kube/config
+      - name: Setup kubeconfig
+        run: echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 --decode > ~/.kube/config
 
-    - name: Change permissions for kubeconfig
-      run: chmod 600 ~/.kube/config
+      - name: Change permissions for kubeconfig
+        run: chmod 600 ~/.kube/config
 
-    - name: Deploy to EKS
-      run: |
-        kubectl apply -f ./k8sYamlFile/fine-dust-app-deployment.yaml
-        kubectl rollout status -f ./k8sYamlFile/fine-dust-app-deployment.yaml
+      - name: Update Kubernetes deployment
+        run: |
+          IMAGE_TAG=${{ github.sha }}
+          sed -i "s|image: kdonghwan/kubernetes_particulate_matter_system:.*|image: kdonghwan/kubernetes_particulate_matter_system:$IMAGE_TAG|g" ./k8sYamlFile/particulate_matter_deployment.yaml
+          kubectl apply -f ./k8sYamlFile/particulate_matter_deployment.yaml
+          kubectl rollout status -f ./k8sYamlFile/particulate_matter_deployment.yaml
