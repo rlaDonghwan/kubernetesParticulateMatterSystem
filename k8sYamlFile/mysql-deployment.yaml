@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql_gyeonggi
+  name: mysql-gyeonggi
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mysql_gyeonggi
+      app: mysql-gyeonggi
   template:
     metadata:
       labels:
-        app: mysql_gyeonggi
+        app: mysql-gyeonggi
     spec:
       initContainers:
         - name: init-mysql
@@ -20,13 +20,13 @@ spec:
             - name: mysql_data
               mountPath: /var/lib/mysql
       containers:
-        - name: mysql_gyeonggi
+        - name: mysql-gyeonggi
           image: mysql:5.7
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: mysql_secrets
+                  name: mysql-secrets
                   key: MYSQL_ROOT_PASSWORD
             - name: MYSQL_DATABASE
               value: "gyeonggi"
@@ -57,21 +57,21 @@ spec:
             claimName: mysql_gyeonggi-pvc
         - name: config-volume
           configMap:
-            name: mysql_config
+            name: mysql-config
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql_gangwon
+  name: mysql-gangwon
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mysql_gangwon
+      app: mysql-gangwon
   template:
     metadata:
       labels:
-        app: mysql_gangwon
+        app: mysql-gangwon
     spec:
       initContainers:
         - name: init-mysql
@@ -87,7 +87,7 @@ spec:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: mysql_secrets
+                  name: mysql-secrets
                   key: MYSQL_ROOT_PASSWORD
             - name: MYSQL_DATABASE
               value: "gangwon"
@@ -118,21 +118,21 @@ spec:
             claimName: mysql_gangwon-pvc
         - name: config-volume
           configMap:
-            name: mysql_config
+            name: mysql-config
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql_chungcheong
+  name: mysql-chungcheong
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mysql_chungcheong
+      app: mysql-chungcheong
   template:
     metadata:
       labels:
-        app: mysql_chungcheong
+        app: mysql-chungcheong
     spec:
       initContainers:
         - name: init-mysql
@@ -142,13 +142,13 @@ spec:
             - name: mysql_data
               mountPath: /var/lib/mysql
       containers:
-        - name: mysql_chungcheong
+        - name: mysql-chungcheong
           image: mysql:5.7
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: mysql_secrets
+                  name: mysql-secrets
                   key: MYSQL_ROOT_PASSWORD
             - name: MYSQL_DATABASE
               value: "chungcheong"
@@ -179,21 +179,21 @@ spec:
             claimName: mysql_chungcheong-pvc
         - name: config-volume
           configMap:
-            name: mysql_config
+            name: mysql-config
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql_gyeongsang
+  name: mysql-gyeongsang
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mysql_gyeongsang
+      app: mysql-gyeongsang
   template:
     metadata:
       labels:
-        app: mysql_gyeongsang
+        app: mysql-gyeongsang
     spec:
       initContainers:
         - name: init-mysql
@@ -203,13 +203,13 @@ spec:
             - name: mysql_data
               mountPath: /var/lib/mysql
       containers:
-        - name: mysql_gyeongsang
+        - name: mysql-gyeongsang
           image: mysql:5.7
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: mysql_secrets
+                  name: mysql-secrets
                   key: MYSQL_ROOT_PASSWORD
             - name: MYSQL_DATABASE
               value: "gyeongsang"
@@ -240,21 +240,21 @@ spec:
             claimName: mysql_gyeongsang-pvc
         - name: config-volume
           configMap:
-            name: mysql_config
+            name: mysql-config
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql_jeolla
+  name: mysql-jeolla
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mysql_jeolla
+      app: mysql-jeolla
   template:
     metadata:
       labels:
-        app: mysql_jeolla
+        app: mysql-jeolla
     spec:
       initContainers:
         - name: init-mysql
@@ -264,13 +264,13 @@ spec:
             - name: mysql_data
               mountPath: /var/lib/mysql
       containers:
-        - name: mysql_jeolla
+        - name: mysql-jeolla
           image: mysql:5.7
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: mysql_secrets
+                  name: mysql-secrets
                   key: MYSQL_ROOT_PASSWORD
             - name: MYSQL_DATABASE
               value: "jeolla"
@@ -301,21 +301,21 @@ spec:
             claimName: mysql_jeolla-pvc
         - name: config-volume
           configMap:
-            name: mysql_config
+            name: mysql-config
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql_jeju
+  name: mysql-jeju
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mysql_jeju
+      app: mysql-jeju
   template:
     metadata:
       labels:
-        app: mysql_jeju
+        app: mysql-jeju
     spec:
       initContainers:
         - name: init-mysql
@@ -325,13 +325,13 @@ spec:
             - name: mysql_data
               mountPath: /var/lib/mysql
       containers:
-        - name: mysql_jeju
+        - name: mysql-jeju
           image: mysql:5.7
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: mysql_secrets
+                  name: mysql-secrets
                   key: MYSQL_ROOT_PASSWORD
             - name: MYSQL_DATABASE
               value: "jeju"
@@ -362,4 +362,4 @@ spec:
             claimName: mysql_jeju-pvc
         - name: config-volume
           configMap:
-            name: mysql_config
+            name: mysql-config

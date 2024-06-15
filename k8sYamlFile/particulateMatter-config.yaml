@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: particulate_matter_config
+  name: particulateMatter-config
 data:
   SPRING_GYEONGGI_DATASOURCE_URL: "jdbc:mysql://mysql-gyeonggi:3306/gyeonggi?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC"
   SPRING_GYEONGGI_DATASOURCE_USERNAME: "root"
