@@ -60,6 +60,6 @@ jobs:
         run: |
           IMAGE_TAG=${{ github.sha }}
           IMAGE_NAME=${{ secrets.DOCKER_USERNAME }}/kubernetes_particulate_matter_system
-          sed -i "s|image: .*/kubernetes_particulate_matter_system:.*|image: $IMAGE_NAME:$IMAGE_TAG|g" ./k8sYamlFile/particulate_matter_deployment.yaml
-          kubectl apply -f ./k8sYamlFile/particulate_matter_deployment.yaml
-          kubectl rollout status -f ./k8sYamlFile/particulate_matter_deployment.yaml
+          sed -i "s|image: .*/kubernetes_particulate_matter_system:.*|image: $IMAGE_NAME:$IMAGE_TAG|g" ./k8sYamlFile/particulate-matter-deployment.yaml
+          kubectl apply -f ./k8sYamlFile/particulate-matter-deployment.yaml
+          kubectl rollout status -f ./k8sYamlFile/particulate-matter-deployment.yaml
