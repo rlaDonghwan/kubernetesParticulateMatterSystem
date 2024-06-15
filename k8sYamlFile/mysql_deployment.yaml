@@ -1,37 +1,37 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql-gyeonggi
+  name: mysql_gyeonggi
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mysql-gyeonggi
+      app: mysql_gyeonggi
   template:
     metadata:
       labels:
-        app: mysql-gyeonggi
+        app: mysql_gyeonggi
     spec:
       initContainers:
         - name: init-mysql
           image: busybox
           command: ['sh', '-c', 'rm -rf /var/lib/mysql/*']
           volumeMounts:
-            - name: mysql-data
+            - name: mysql_data
               mountPath: /var/lib/mysql
       containers:
-        - name: mysql-gyeonggi
+        - name: mysql_gyeonggi
           image: mysql:5.7
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: mysql-secrets
+                  name: mysql_secrets
                   key: MYSQL_ROOT_PASSWORD
             - name: MYSQL_DATABASE
               value: "gyeonggi"
           volumeMounts:
-            - name: mysql-data
+            - name: mysql_data
               mountPath: /var/lib/mysql
             - name: config-volume
               mountPath: /etc/mysql/conf.d
@@ -52,47 +52,47 @@ spec:
             initialDelaySeconds: 60
             periodSeconds: 10
       volumes:
-        - name: mysql-data
+        - name: mysql_data
           persistentVolumeClaim:
-            claimName: mysql-gyeonggi-pvc
+            claimName: mysql_gyeonggi-pvc
         - name: config-volume
           configMap:
-            name: mysql-config
+            name: mysql_config
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql-gangwon
+  name: mysql_gangwon
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mysql-gangwon
+      app: mysql_gangwon
   template:
     metadata:
       labels:
-        app: mysql-gangwon
+        app: mysql_gangwon
     spec:
       initContainers:
         - name: init-mysql
           image: busybox
           command: ['sh', '-c', 'rm -rf /var/lib/mysql/*']
           volumeMounts:
-            - name: mysql-data
+            - name: mysql_data
               mountPath: /var/lib/mysql
       containers:
-        - name: mysql-gangwon
+        - name: mysql_gangwon
           image: mysql:5.7
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: mysql-secrets
+                  name: mysql_secrets
                   key: MYSQL_ROOT_PASSWORD
             - name: MYSQL_DATABASE
               value: "gangwon"
           volumeMounts:
-            - name: mysql-data
+            - name: mysql_data
               mountPath: /var/lib/mysql
             - name: config-volume
               mountPath: /etc/mysql/conf.d
@@ -113,47 +113,47 @@ spec:
             initialDelaySeconds: 60
             periodSeconds: 10
       volumes:
-        - name: mysql-data
+        - name: mysql_data
           persistentVolumeClaim:
-            claimName: mysql-gangwon-pvc
+            claimName: mysql_gangwon-pvc
         - name: config-volume
           configMap:
-            name: mysql-config
+            name: mysql_config
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql-chungcheong
+  name: mysql_chungcheong
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mysql-chungcheong
+      app: mysql_chungcheong
   template:
     metadata:
       labels:
-        app: mysql-chungcheong
+        app: mysql_chungcheong
     spec:
       initContainers:
         - name: init-mysql
           image: busybox
           command: ['sh', '-c', 'rm -rf /var/lib/mysql/*']
           volumeMounts:
-            - name: mysql-data
+            - name: mysql_data
               mountPath: /var/lib/mysql
       containers:
-        - name: mysql-chungcheong
+        - name: mysql_chungcheong
           image: mysql:5.7
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: mysql-secrets
+                  name: mysql_secrets
                   key: MYSQL_ROOT_PASSWORD
             - name: MYSQL_DATABASE
               value: "chungcheong"
           volumeMounts:
-            - name: mysql-data
+            - name: mysql_data
               mountPath: /var/lib/mysql
             - name: config-volume
               mountPath: /etc/mysql/conf.d
@@ -174,47 +174,47 @@ spec:
             initialDelaySeconds: 60
             periodSeconds: 10
       volumes:
-        - name: mysql-data
+        - name: mysql_data
           persistentVolumeClaim:
-            claimName: mysql-chungcheong-pvc
+            claimName: mysql_chungcheong-pvc
         - name: config-volume
           configMap:
-            name: mysql-config
+            name: mysql_config
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql-gyeongsang
+  name: mysql_gyeongsang
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mysql-gyeongsang
+      app: mysql_gyeongsang
   template:
     metadata:
       labels:
-        app: mysql-gyeongsang
+        app: mysql_gyeongsang
     spec:
       initContainers:
         - name: init-mysql
           image: busybox
           command: ['sh', '-c', 'rm -rf /var/lib/mysql/*']
           volumeMounts:
-            - name: mysql-data
+            - name: mysql_data
               mountPath: /var/lib/mysql
       containers:
-        - name: mysql-gyeongsang
+        - name: mysql_gyeongsang
           image: mysql:5.7
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: mysql-secrets
+                  name: mysql_secrets
                   key: MYSQL_ROOT_PASSWORD
             - name: MYSQL_DATABASE
               value: "gyeongsang"
           volumeMounts:
-            - name: mysql-data
+            - name: mysql_data
               mountPath: /var/lib/mysql
             - name: config-volume
               mountPath: /etc/mysql/conf.d
@@ -235,47 +235,47 @@ spec:
             initialDelaySeconds: 60
             periodSeconds: 10
       volumes:
-        - name: mysql-data
+        - name: mysql_data
           persistentVolumeClaim:
-            claimName: mysql-gyeongsang-pvc
+            claimName: mysql_gyeongsang-pvc
         - name: config-volume
           configMap:
-            name: mysql-config
+            name: mysql_config
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql-jeolla
+  name: mysql_jeolla
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mysql-jeolla
+      app: mysql_jeolla
   template:
     metadata:
       labels:
-        app: mysql-jeolla
+        app: mysql_jeolla
     spec:
       initContainers:
         - name: init-mysql
           image: busybox
           command: ['sh', '-c', 'rm -rf /var/lib/mysql/*']
           volumeMounts:
-            - name: mysql-data
+            - name: mysql_data
               mountPath: /var/lib/mysql
       containers:
-        - name: mysql-jeolla
+        - name: mysql_jeolla
           image: mysql:5.7
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: mysql-secrets
+                  name: mysql_secrets
                   key: MYSQL_ROOT_PASSWORD
             - name: MYSQL_DATABASE
               value: "jeolla"
           volumeMounts:
-            - name: mysql-data
+            - name: mysql_data
               mountPath: /var/lib/mysql
             - name: config-volume
               mountPath: /etc/mysql/conf.d
@@ -296,47 +296,47 @@ spec:
             initialDelaySeconds: 60
             periodSeconds: 10
       volumes:
-        - name: mysql-data
+        - name: mysql_data
           persistentVolumeClaim:
-            claimName: mysql-jeolla-pvc
+            claimName: mysql_jeolla-pvc
         - name: config-volume
           configMap:
-            name: mysql-config
+            name: mysql_config
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql-jeju
+  name: mysql_jeju
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mysql-jeju
+      app: mysql_jeju
   template:
     metadata:
       labels:
-        app: mysql-jeju
+        app: mysql_jeju
     spec:
       initContainers:
         - name: init-mysql
           image: busybox
           command: ['sh', '-c', 'rm -rf /var/lib/mysql/*']
           volumeMounts:
-            - name: mysql-data
+            - name: mysql_data
               mountPath: /var/lib/mysql
       containers:
-        - name: mysql-jeju
+        - name: mysql_jeju
           image: mysql:5.7
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: mysql-secrets
+                  name: mysql_secrets
                   key: MYSQL_ROOT_PASSWORD
             - name: MYSQL_DATABASE
               value: "jeju"
           volumeMounts:
-            - name: mysql-data
+            - name: mysql_data
               mountPath: /var/lib/mysql
             - name: config-volume
               mountPath: /etc/mysql/conf.d
@@ -357,9 +357,9 @@ spec:
             initialDelaySeconds: 60
             periodSeconds: 10
       volumes:
-        - name: mysql-data
+        - name: mysql_data
           persistentVolumeClaim:
-            claimName: mysql-jeju-pvc
+            claimName: mysql_jeju-pvc
         - name: config-volume
           configMap:
-            name: mysql-config
+            name: mysql_config
