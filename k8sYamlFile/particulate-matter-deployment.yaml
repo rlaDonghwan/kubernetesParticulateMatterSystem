@@ -32,27 +32,27 @@ spec:
             - name: SPRING_GYEONGGI_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: particulate_matter_secrets
+                  name: particulate-matter-secrets
                   key: SPRING_GYEONGGI_DATASOURCE_PASSWORD
             - name: SPRING_GANGWON_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: particulate_matter_secrets
+                  name: particulate-matter-secrets
                   key: SPRING_GANGWON_DATASOURCE_PASSWORD
             - name: SPRING_CHUNGCHEONG_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: particulate_matter_secrets
+                  name: particulate-matter-secrets
                   key: SPRING_CHUNGCHEONG_DATASOURCE_PASSWORD
             - name: SPRING_GYEONGSANG_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: particulate_matter_secrets
+                  name: particulate-matter-secrets
                   key: SPRING_GYEONGSANG_DATASOURCE_PASSWORD
             - name: SPRING_JEOLLA_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: particulate_matter_secrets
+                  name: particulate-matter-secrets
                   key: SPRING_JEOLLA_DATASOURCE_PASSWORD
             - name: SPRING_JEJU_DATASOURCE_PASSWORD
               valueFrom:

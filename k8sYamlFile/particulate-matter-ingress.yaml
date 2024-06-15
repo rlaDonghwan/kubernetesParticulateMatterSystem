@@ -16,6 +16,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: particulate_matter_service
+                name: particulate-matter-service
                 port:
                   number: 8181
