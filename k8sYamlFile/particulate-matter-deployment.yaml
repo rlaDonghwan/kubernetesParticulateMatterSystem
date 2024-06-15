@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: particulateMatter-app
+  name: particulate-matter-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: particulateMatter-app
+      app: particulate-matter-app
   template:
     metadata:
       labels:
-        app: particulateMatter-app
+        app: particulate-matter-app
     spec:
       containers:
-        - name: particulateMatter-app
+        - name: particulate-matter-app
           image: kdonghwan/kubernetes_particulate_matter_system:latest
           imagePullPolicy: Always
           ports:
@@ -27,7 +27,7 @@ spec:
               cpu: "500m"
           envFrom:
             - configMapRef:
-                name: particulateMatter-config
+                name: particulate-matter-config
           env:
             - name: SPRING_GYEONGGI_DATASOURCE_PASSWORD
               valueFrom:
@@ -57,7 +57,7 @@ spec:
             - name: SPRING_JEJU_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: particulateMatter-secrets
+                  name: particulate-matter-secrets
                   key: SPRING_JEJU_DATASOURCE_PASSWORD
           livenessProbe:
             httpGet:

@@ -17,7 +17,7 @@ spec:
           image: busybox
           command: ['sh', '-c', 'rm -rf /var/lib/mysql/*']
           volumeMounts:
-            - name: mysql_data
+            - name: mysql-data
               mountPath: /var/lib/mysql
       containers:
         - name: mysql-gyeonggi
@@ -31,7 +31,7 @@ spec:
             - name: MYSQL_DATABASE
               value: "gyeonggi"
           volumeMounts:
-            - name: mysql_data
+            - name: mysql-data
               mountPath: /var/lib/mysql
             - name: config-volume
               mountPath: /etc/mysql/conf.d
@@ -52,9 +52,9 @@ spec:
             initialDelaySeconds: 60
             periodSeconds: 10
       volumes:
-        - name: mysql_data
+        - name: mysql-data
           persistentVolumeClaim:
-            claimName: mysql_gyeonggi-pvc
+            claimName: mysql-gyeonggi-pvc
         - name: config-volume
           configMap:
             name: mysql-config
@@ -78,10 +78,10 @@ spec:
           image: busybox
           command: ['sh', '-c', 'rm -rf /var/lib/mysql/*']
           volumeMounts:
-            - name: mysql_data
+            - name: mysql-data
               mountPath: /var/lib/mysql
       containers:
-        - name: mysql_gangwon
+        - name: mysql-gangwon
           image: mysql:5.7
           env:
             - name: MYSQL_ROOT_PASSWORD
@@ -92,7 +92,7 @@ spec:
             - name: MYSQL_DATABASE
               value: "gangwon"
           volumeMounts:
-            - name: mysql_data
+            - name: mysql-data
               mountPath: /var/lib/mysql
             - name: config-volume
               mountPath: /etc/mysql/conf.d
@@ -113,9 +113,9 @@ spec:
             initialDelaySeconds: 60
             periodSeconds: 10
       volumes:
-        - name: mysql_data
+        - name: mysql-data
           persistentVolumeClaim:
-            claimName: mysql_gangwon-pvc
+            claimName: mysql-gangwon-pvc
         - name: config-volume
           configMap:
             name: mysql-config
@@ -139,7 +139,7 @@ spec:
           image: busybox
           command: ['sh', '-c', 'rm -rf /var/lib/mysql/*']
           volumeMounts:
-            - name: mysql_data
+            - name: mysql-data
               mountPath: /var/lib/mysql
       containers:
         - name: mysql-chungcheong
@@ -153,7 +153,7 @@ spec:
             - name: MYSQL_DATABASE
               value: "chungcheong"
           volumeMounts:
-            - name: mysql_data
+            - name: mysql-data
               mountPath: /var/lib/mysql
             - name: config-volume
               mountPath: /etc/mysql/conf.d
@@ -174,9 +174,9 @@ spec:
             initialDelaySeconds: 60
             periodSeconds: 10
       volumes:
-        - name: mysql_data
+        - name: mysql-data
           persistentVolumeClaim:
-            claimName: mysql_chungcheong-pvc
+            claimName: mysql-chungcheong-pvc
         - name: config-volume
           configMap:
             name: mysql-config
@@ -200,7 +200,7 @@ spec:
           image: busybox
           command: ['sh', '-c', 'rm -rf /var/lib/mysql/*']
           volumeMounts:
-            - name: mysql_data
+            - name: mysql-data
               mountPath: /var/lib/mysql
       containers:
         - name: mysql-gyeongsang
@@ -214,7 +214,7 @@ spec:
             - name: MYSQL_DATABASE
               value: "gyeongsang"
           volumeMounts:
-            - name: mysql_data
+            - name: mysql-data
               mountPath: /var/lib/mysql
             - name: config-volume
               mountPath: /etc/mysql/conf.d
@@ -235,9 +235,9 @@ spec:
             initialDelaySeconds: 60
             periodSeconds: 10
       volumes:
-        - name: mysql_data
+        - name: mysql-data
           persistentVolumeClaim:
-            claimName: mysql_gyeongsang-pvc
+            claimName: mysql-gyeongsang-pvc
         - name: config-volume
           configMap:
             name: mysql-config
@@ -261,7 +261,7 @@ spec:
           image: busybox
           command: ['sh', '-c', 'rm -rf /var/lib/mysql/*']
           volumeMounts:
-            - name: mysql_data
+            - name: mysql-data
               mountPath: /var/lib/mysql
       containers:
         - name: mysql-jeolla
@@ -275,7 +275,7 @@ spec:
             - name: MYSQL_DATABASE
               value: "jeolla"
           volumeMounts:
-            - name: mysql_data
+            - name: mysql-data
               mountPath: /var/lib/mysql
             - name: config-volume
               mountPath: /etc/mysql/conf.d
@@ -296,9 +296,9 @@ spec:
             initialDelaySeconds: 60
             periodSeconds: 10
       volumes:
-        - name: mysql_data
+        - name: mysql-data
           persistentVolumeClaim:
-            claimName: mysql_jeolla-pvc
+            claimName: mysql-jeolla-pvc
         - name: config-volume
           configMap:
             name: mysql-config
@@ -322,7 +322,7 @@ spec:
           image: busybox
           command: ['sh', '-c', 'rm -rf /var/lib/mysql/*']
           volumeMounts:
-            - name: mysql_data
+            - name: mysql-data
               mountPath: /var/lib/mysql
       containers:
         - name: mysql-jeju
@@ -336,7 +336,7 @@ spec:
             - name: MYSQL_DATABASE
               value: "jeju"
           volumeMounts:
-            - name: mysql_data
+            - name: mysql-data
               mountPath: /var/lib/mysql
             - name: config-volume
               mountPath: /etc/mysql/conf.d
@@ -357,9 +357,9 @@ spec:
             initialDelaySeconds: 60
             periodSeconds: 10
       volumes:
-        - name: mysql_data
+        - name: mysql-data
           persistentVolumeClaim:
-            claimName: mysql_jeju-pvc
+            claimName: mysql-jeju-pvc
         - name: config-volume
           configMap:
             name: mysql-config
